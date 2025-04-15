@@ -1,132 +1,185 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Play, Pause, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState, useRef, useEffect } from "react";
+import { Play, Pause, ArrowRight } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-type Testimonial = {
-  id: number
-  name: string
-  role: string
-  image: string
-  isPlaying: boolean
+interface TestimonialVideo {
+  id: string;
+  name: string;
+  title: string;
+  videoSrc: string;
+  posterSrc: string;
 }
 
-export default function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
+export default function VideoCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [playingStates, setPlayingStates] = useState<Record<string, boolean>>(
+    {}
+  );
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+
+  const testimonials: TestimonialVideo[] = [
     {
-      id: 1,
+      id: "1",
       name: "Albert Flores",
-      role: "Founder of GearUp",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%201597882701-zll5PxXbX5FD5vG3ba1XYPjIuDunco.png",
-      isPlaying: false,
+      title: "Founder of GearUp",
+      videoSrc: "/videos/testimonial1.mp4",
+      posterSrc: "/assets/cl.png",
     },
     {
-      id: 2,
+      id: "2",
       name: "Leslie Alexander",
-      role: "Co-Founder of Womenia",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%201597882701-zll5PxXbX5FD5vG3ba1XYPjIuDunco.png",
-      isPlaying: true,
+      title: "Co-Founder of Womenia",
+      videoSrc: "/videos/testimonial2.mp4",
+      posterSrc: "/assets/cc.png",
     },
     {
-      id: 3,
+      id: "3",
       name: "Courtney Henry",
-      role: "Founder of CH Beauty",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%201597882701-zll5PxXbX5FD5vG3ba1XYPjIuDunco.png",
-      isPlaying: false,
+      title: "Founder of CH Beauty",
+      videoSrc: "/videos/testimonial3.mp4",
+      posterSrc: "/assets/cr.png",
     },
-  ])
+  ];
 
-  const [activeIndex, setActiveIndex] = useState(1)
+  const togglePlayPause = (id: string) => {
+    const video = videoRefs.current[id];
+    if (!video) return;
 
-  const togglePlayPause = (id: number) => {
-    setTestimonials(
-      testimonials.map((testimonial) => ({
-        ...testimonial,
-        isPlaying: testimonial.id === id ? !testimonial.isPlaying : testimonial.isPlaying,
-      })),
-    )
-  }
+    if (video.paused) {
+      // Pause all other videos first
+      Object.entries(videoRefs.current).forEach(([videoId, videoEl]) => {
+        if (videoId !== id && videoEl && !videoEl.paused) {
+          videoEl.pause();
+          setPlayingStates((prev) => ({ ...prev, [videoId]: false }));
+        }
+      });
 
-  const nextTestimonial = () => {
-    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
-  }
+      // Play the selected video
+      video.play();
+      setPlayingStates((prev) => ({ ...prev, [id]: true }));
+    } else {
+      video.pause();
+      setPlayingStates((prev) => ({ ...prev, [id]: false }));
+    }
+  };
 
-  const prevTestimonial = () => {
-    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
-  }
+  const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const handleSelect = () => {
+      setCurrentIndex(api.selectedScrollSnap());
+
+      // Pause all videos when changing slides
+      Object.entries(videoRefs.current).forEach(([id, video]) => {
+        if (video && !video.paused) {
+          video.pause();
+          setPlayingStates((prev) => ({ ...prev, [id]: false }));
+        }
+      });
+    };
+
+    api.on("select", handleSelect);
+
+    // Set initial index
+    setCurrentIndex(api.selectedScrollSnap());
+
+    return () => {
+      api.off("select", handleSelect);
+    };
+  }, [api]);
 
   return (
-    <section className="container pb-16">
-      <h2 className="text-2xl font-bold text-white text-center mb-8">Trusted By 1,200+ Homes & Businesses</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((testimonial, index) => (
-          <div
-            key={testimonial.id}
-            className={cn(
-              "bg-blue-900/20 rounded-lg overflow-hidden border-2",
-              index === activeIndex ? "border-yellow-400" : "border-transparent",
-            )}
-          >
-            <div className="relative h-[400px]">
-              <Image
-                src={testimonial.image || "/placeholder.svg"}
-                alt={testimonial.name}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-medium">{testimonial.name}</h3>
-                <p className="text-gray-300 text-sm">{testimonial.role}</p>
-              </div>
-              <button
-                onClick={() => togglePlayPause(testimonial.id)}
-                className="absolute bottom-4 right-4 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
-              >
-                {testimonial.isPlaying ? (
-                  <Pause className="h-5 w-5 text-white" />
-                ) : (
-                  <Play className="h-5 w-5 text-white" />
-                )}
-              </button>
-            </div>
-          </div>
-        ))}
+    <div className="w-full container mx-auto">
+      <div className="text-center text-[28px] md:text-[40px] font-[700] text-primary mb-10">
+        Trusted By 1,200+ Homes & Businesses
       </div>
-      <div className="flex justify-center mt-6 gap-2">
-        <button
-          onClick={prevTestimonial}
-          className="w-6 h-6 rounded-full bg-blue-800 flex items-center justify-center hover:bg-blue-700 transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4 text-white" />
-        </button>
-        <div className="flex gap-1">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
-              className={cn("w-2 h-2 rounded-full", index === activeIndex ? "bg-yellow-400" : "bg-blue-800")}
-            />
+      <Carousel className="w-full" setApi={setApi}>
+        <CarouselContent>
+          {testimonials.map((testimonial) => (
+            <CarouselItem
+              key={testimonial.id}
+              className="md:basis-1/3 lg:basis-1/3"
+            >
+              <Card className="rounded-lg overflow-hidden border border-gray-200 relative">
+                <div className="relative aspect-[3/4]">
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[testimonial.id] = el;
+                      return;
+                    }}
+                    poster={testimonial.posterSrc}
+                    className="w-full h-full object-cover"
+                    src={testimonial.videoSrc}
+                    playsInline
+                    onEnded={() =>
+                      setPlayingStates((prev) => ({
+                        ...prev,
+                        [testimonial.id]: false,
+                      }))
+                    }
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                    <h3 className="text-xl font-semibold">
+                      {testimonial.name}
+                    </h3>
+                    <p className="text-sm text-gray-200">{testimonial.title}</p>
+                  </div>
+                  <Button
+                    onClick={() => togglePlayPause(testimonial.id)}
+                    variant="outline"
+                    size="icon"
+                    className="absolute bottom-4 right-4 rounded-full bg-white/20 backdrop-blur-sm border-white/40 hover:bg-white/30"
+                  >
+                    {playingStates[testimonial.id] ? (
+                      <Pause className="h-5 w-5 text-white" />
+                    ) : (
+                      <Play className="h-5 w-5 text-white" />
+                    )}
+                  </Button>
+                </div>
+              </Card>
+            </CarouselItem>
           ))}
+        </CarouselContent>
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <CarouselPrevious className="static transform-none bg-transparent border-none hover:bg-transparent text-amber-400 hover:text-amber-500" />
+          <div className="flex gap-2">
+            {testimonials.map((_, index) => (
+              <div
+                key={index}
+                className={`h-2 w-2 rounded-full transition-all ${
+                  currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+          <CarouselNext className="static transform-none bg-transparent border-none hover:bg-transparent text-amber-400 hover:text-amber-500" />
         </div>
-        <button
-          onClick={nextTestimonial}
-          className="w-6 h-6 rounded-full bg-blue-800 flex items-center justify-center hover:bg-blue-700 transition-colors"
+      </Carousel>
+      <div className="flex justify-center mt-8">
+        <a
+          href="#"
+          className="text-amber-400 hover:text-amber-500 flex items-center gap-2 text-lg font-medium border border-amber-400 rounded-full px-6 py-3"
         >
-          <ChevronRight className="h-4 w-4 text-white" />
-        </button>
-      </div>
-      <div className="flex justify-center mt-6">
-        <Button variant="outline" className="border-yellow-400 text-yellow-400 hover:bg-blue-900/30">
           See all reviews by our customers
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
+          <ArrowRight className="h-5 w-5" />
+        </a>
       </div>
-    </section>
-  )
+    </div>
+  );
 }

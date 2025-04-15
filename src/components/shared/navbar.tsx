@@ -23,8 +23,8 @@ export default function Navbar() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="border-b border-blue-900/30  text-white sticky">
-      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+    <header className="bg-secondary border-b border-blue-900/30  text-white sticky">
+      <div className="container mx-auto flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image

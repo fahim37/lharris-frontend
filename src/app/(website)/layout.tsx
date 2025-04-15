@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/shared/navbar";
 import Footer from "@/components/shared/footer";
+import CTASection from "@/components/landing/cta-section";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-[#091057]`}>
-        <Navbar />
-        {children}
+        <div className="sticky top-0 z-50">
+          <Navbar />
+        </div>
+        <main className="pt-16">{children}</main>
+        <CTASection />
         <Footer />
       </body>
     </html>
