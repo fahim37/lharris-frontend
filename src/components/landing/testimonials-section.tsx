@@ -172,13 +172,10 @@ export default function VideoCarousel() {
         </div>
       </Carousel>
       <div className="flex justify-center mt-8">
-        <a
-          href="#"
-          className="text-amber-400 hover:text-amber-500 flex items-center gap-2 text-lg font-medium border border-amber-400 rounded-full px-6 py-3"
-        >
+        <Button variant={"outline"} className="px-[16px] py-[32px] text-primary rounded-[8px]">
           See all reviews by our customers
           <ArrowRight className="h-5 w-5" />
-        </a>
+        </Button>
       </div>
     </div>
   );

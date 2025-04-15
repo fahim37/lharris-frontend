@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch"
+import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
 
 type PricingPeriod = "monthly" | "yearly";
@@ -19,25 +19,41 @@ export default function PricingSection() {
     setIsChecked(checked);
     setPeriod(checked ? "yearly" : "monthly");
   };
-  console.log(period)
+  console.log(period);
 
   return (
-    <section className="container pb-16">
+    <section className="container py-16">
       <div className="text-center mb-12">
-        <h2 className="text-2xl font-bold text-white mb-2">
-          Powerful features for
-          <br />
-          powerful creators
+        <h2 className="text-[28px] md:text-[40px] font-bold  mb-2">
+          <div className="text-white">Powerful features for</div>
+
+          <div className="text-primary">powerful creators</div>
         </h2>
         <p className="text-gray-300">Choose a plan that&apos;s right for you</p>
         <div className="flex justify-center items-center mt-6 gap-4">
           <div className="flex items-center gap-4 bg-[#0a1155] rounded-full p-1">
-            <p className={`text-[16px] text-white ${period === "monthly" ? 'opacity-100' : 'opacity-50'} `}>Pay Monthly</p>
+            <p
+              className={`text-[16px] text-white ${
+                period === "monthly" ? "opacity-100" : "opacity-50"
+              } `}
+            >
+              Pay Monthly
+            </p>
             <div className="flex items-center space-x-2">
-              <Switch id="pricing" checked={isChecked} onCheckedChange={handleSwitchChange} />
+              <Switch
+                id="pricing"
+                checked={isChecked}
+                onCheckedChange={handleSwitchChange}
+              />
             </div>
             <div className="relative">
-              <p className={`text-[16px] text-white ${period === "yearly" ? 'opacity-100' : 'opacity-50'} `}>Pay Yearly</p>
+              <p
+                className={`text-[16px] text-white ${
+                  period === "yearly" ? "opacity-100" : "opacity-50"
+                } `}
+              >
+                Pay Yearly
+              </p>
               <div className="text-primary flex items-center absolute -bottom-12 -right-44">
                 <Image
                   src="/assets/arrowprice.png"
@@ -50,7 +66,6 @@ export default function PricingSection() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
