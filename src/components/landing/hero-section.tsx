@@ -15,7 +15,7 @@ export default function HeroSection() {
             Schedule Your First Security Visit in 2 Minutes
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button className=" hover:bg-primary text-secondary font-medium px-8">
+            <Button className="text-secondary font-medium px-8">
               Get Started
             </Button>
             <Button
