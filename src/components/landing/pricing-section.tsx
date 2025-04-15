@@ -6,11 +6,20 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch"
+import Image from "next/image";
 
 type PricingPeriod = "monthly" | "yearly";
 
 export default function PricingSection() {
   const [period, setPeriod] = useState<PricingPeriod>("monthly");
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleSwitchChange = (checked: boolean) => {
+    setIsChecked(checked);
+    setPeriod(checked ? "yearly" : "monthly");
+  };
+  console.log(period)
 
   return (
     <section className="container pb-16">
@@ -20,51 +29,28 @@ export default function PricingSection() {
           <br />
           powerful creators
         </h2>
-        <p className="text-gray-300">Choose a plan that's right for you</p>
+        <p className="text-gray-300">Choose a plan that&apos;s right for you</p>
         <div className="flex justify-center items-center mt-6 gap-4">
-          <div className="flex items-center gap-2 bg-[#0a1155] rounded-full p-1">
-            <Button
-              variant="outline"
-              className={cn(
-                "rounded-full border-0",
-                period === "monthly"
-                  ? "bg-[#0a1155] text-primary"
-                  : "bg-transparent text-white hover:bg-blue-900/30"
-              )}
-              onClick={() => setPeriod("monthly")}
-            >
-              Pay Monthly
-            </Button>
-            <Button
-              variant="outline"
-              className={cn(
-                "rounded-full border-0",
-                period === "yearly"
-                  ? "bg-[#0a1155] text-primary"
-                  : "bg-transparent text-white hover:bg-blue-900/30"
-              )}
-              onClick={() => setPeriod("yearly")}
-            >
-              Pay Yearly
-            </Button>
+          <div className="flex items-center gap-4 bg-[#0a1155] rounded-full p-1">
+            <p className={`text-[16px] text-white ${period === "monthly" ? 'opacity-100' : 'opacity-50'} `}>Pay Monthly</p>
+            <div className="flex items-center space-x-2">
+              <Switch id="pricing" checked={isChecked} onCheckedChange={handleSwitchChange} />
+            </div>
+            <div className="relative">
+              <p className={`text-[16px] text-white ${period === "yearly" ? 'opacity-100' : 'opacity-50'} `}>Pay Yearly</p>
+              <div className="text-primary flex items-center absolute -bottom-12 -right-44">
+                <Image
+                  src="/assets/arrowprice.png"
+                  alt="arrow"
+                  width={450}
+                  height={200}
+                  className="w-24 h-20"
+                />
+                <span className="text-sm">Save 25%</span>
+              </div>
+            </div>
           </div>
-          <div className="text-primary flex items-center">
-            <span className="text-sm">Save 25%</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-10 w-10 -rotate-45"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
-          </div>
+
         </div>
       </div>
 
