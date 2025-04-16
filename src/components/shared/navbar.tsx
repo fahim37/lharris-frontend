@@ -1,4 +1,3 @@
-// components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -23,7 +22,7 @@ export default function Navbar() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="bg-secondary border-b border-blue-900/30  text-white sticky">
+    <header className="bg-secondary border-b border-blue-900/30 text-white sticky">
       <div className="container mx-auto flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -58,7 +57,7 @@ export default function Navbar() {
                 <Menu className="h-6 w-6 text-white" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="bg-black text-white w-64">
+            <SheetContent side="right" className="bg-secondary text-white w-64">
               <div className="flex items-center justify-between mb-4">
                 <Image
                   src="/assets/lhasis-logo.png"

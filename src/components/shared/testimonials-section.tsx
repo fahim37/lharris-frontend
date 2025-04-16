@@ -105,7 +105,7 @@ export default function VideoCarousel() {
 
   return (
     <div className="w-full container mx-auto">
-      <div className="text-center text-[28px] md:text-[40px] font-[700] text-primary mb-10">
+      <div className="text-center text-[28px] md:text-[40px] font-[700] text-white mb-10">
         Trusted By 1,200+ Homes & Businesses
       </div>
       <Carousel className="w-full" setApi={setApi}>
@@ -172,7 +172,10 @@ export default function VideoCarousel() {
         </div>
       </Carousel>
       <div className="flex justify-center mt-8">
-        <Button variant={"outline"} className="px-[16px] py-[32px] text-primary rounded-[8px]">
+        <Button
+          variant={"outline"}
+          className="px-[16px] py-[32px] text-primary rounded-[8px]"
+        >
           See all reviews by our customers
           <ArrowRight className="h-5 w-5" />
         </Button>

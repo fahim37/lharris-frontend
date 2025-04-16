@@ -1,7 +1,19 @@
+import ContactBanner from "@/components/contact/banner-contact";
+import ContactSection from "@/components/contact/contact-section";
+import TestimonialsSection from "@/components/shared/testimonials-section";
+
 import React from "react";
 
 const page = () => {
-  return <div>page</div>;
+  return (
+    <div>
+      <ContactBanner/>
+      <ContactSection />
+      <div className="mt-5 mb-20">
+        <TestimonialsSection />
+      </div>
+    </div>
+  );
 };
 
 export default page;
