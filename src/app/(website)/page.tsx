@@ -1,7 +1,7 @@
 import FeaturesSection from "@/components/landing/features-section";
 import HeroSection from "@/components/landing/hero-section";
 import ScheduleVisitSection from "@/components/landing/schedule-visit-section";
-import TestimonialsSection from "@/components/landing/testimonials-section";
+import TestimonialsSection from "@/components/shared/testimonials-section";
 import PricingSection from "@/components/shared/pricing-section";
 
 export default function Home() {

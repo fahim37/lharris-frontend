@@ -23,7 +23,7 @@ export default function RootLayout({
         <div className="sticky top-0 z-50">
           <Navbar />
         </div>
-        <main className="pt-16">{children}</main>
+        <main>{children}</main>
         <CTASection />
         <Footer />
       </body>

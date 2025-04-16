@@ -54,13 +54,13 @@ export default function PricingSection() {
               >
                 Pay Yearly
               </p>
-              <div className="text-primary flex items-center absolute -bottom-12 -right-44">
+              <div className="text-primary flex items-center absolute -right-16 md:-bottom-12 md:-right-30">
                 <Image
                   src="/assets/arrowprice.png"
                   alt="arrow"
                   width={450}
                   height={200}
-                  className="w-24 h-20"
+                  className="md:w-24 ms:h-20 w-16 h-12"
                 />
                 <span className="text-sm">Save 25%</span>
               </div>
@@ -69,9 +69,10 @@ export default function PricingSection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[500px]">
         {/* Basic Plan */}
-        <div className="bg-blue-900/30 rounded-lg p-6 flex flex-col">
+        
+        <div className="bg-[#FFFFFF1A] rounded-lg p-6 flex flex-col">
           <h3 className="text-white font-medium mb-4">Basic</h3>
           <div className="flex items-end gap-1 mb-6">
             <span className="text-4xl font-bold text-primary">$49</span>
@@ -90,7 +91,13 @@ export default function PricingSection() {
         </div>
 
         {/* Professional Plan */}
-        <div className="bg-primary rounded-lg p-6 flex flex-col relative">
+        <div
+          className="rounded-lg p-6 flex flex-col relative"
+          style={{
+            background:
+              "linear-gradient(170.72deg, #F7E39F -8.75%, #091057 110.07%)",
+          }}
+        >
           <h3 className="text-black font-medium mb-4">Professional</h3>
           <div className="flex items-end gap-1 mb-6">
             <span className="text-4xl font-bold text-blue-900">$99</span>
@@ -104,13 +111,11 @@ export default function PricingSection() {
             <PricingFeature variant="pro">5 User Access</PricingFeature>
             <PricingFeature variant="pro">24/7 Support</PricingFeature>
           </ul>
-          <Button className="bg-blue-900 hover:bg-blue-800 text-white w-full">
-            Choose Plan
-          </Button>
+          <Button className="bg-primary  w-full">Choose Plan</Button>
         </div>
 
         {/* Enterprise Plan */}
-        <div className="bg-blue-900/30 rounded-lg p-6 flex flex-col">
+        <div className="bg-[#FFFFFF1A] rounded-lg p-6 flex flex-col">
           <h3 className="text-white font-medium mb-4">Enterprise</h3>
           <div className="flex items-end gap-1 mb-6">
             <span className="text-4xl font-bold text-yellow-400">$199</span>
@@ -125,9 +130,7 @@ export default function PricingSection() {
             <PricingFeature>API Access</PricingFeature>
             <PricingFeature>Custom Integration</PricingFeature>
           </ul>
-          <Button className="bg-primary hover:bg-yellow-500 text-black w-full">
-            Choose Plan
-          </Button>
+          <Button className="bg-primary  text-black w-full">Choose Plan</Button>
         </div>
       </div>
     </section>

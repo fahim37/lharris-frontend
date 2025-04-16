@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -11,17 +11,26 @@ export default function Footer() {
             <h3 className="text-white font-medium mb-4">About Us</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Company Story
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Careers
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Press
                 </Link>
               </li>
@@ -31,17 +40,26 @@ export default function Footer() {
             <h3 className="text-white font-medium mb-4">Services</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Video Monitoring
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Visit Scheduling
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Payment Plans
                 </Link>
               </li>
@@ -51,17 +69,26 @@ export default function Footer() {
             <h3 className="text-white font-medium mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-300 text-sm hover:text-yellow-400">
+                <Link
+                  href="#"
+                  className="text-gray-300 text-sm hover:text-primary"
+                >
                   Compliance
                 </Link>
               </li>
@@ -75,28 +102,32 @@ export default function Footer() {
                 placeholder="Your email"
                 className="bg-blue-900/50 border border-blue-800 text-white px-3 py-2 rounded-l-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-400"
               />
-              <Button className="bg-yellow-400 hover:bg-yellow-500 text-black rounded-l-none">
+              <Button className=" rounded-l-none">
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex gap-4 mt-4">
-              <Link href="#" className="text-gray-300 hover:text-yellow-400">
+              <Link href="#" className="text-gray-300 hover:text-primary">
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-gray-300 hover:text-yellow-400">
+              <Link href="#" className="text-gray-300 hover:text-primary">
                 <Instagram className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-gray-300 hover:text-yellow-400">
+              <Link href="#" className="text-gray-300 hover:text-primary">
                 <Linkedin className="h-5 w-5" />
               </Link>
             </div>
           </div>
         </div>
         <div className="border-t border-blue-900/30 pt-6 text-center">
-          <p className="text-gray-400 text-xs">© 2023 - SecureHome Solutions. All rights reserved.</p>
-          <p className="text-gray-400 text-xs mt-2">24/7 Emergency Support • 1-800-555-0123</p>
+          <p className="text-gray-400 text-xs">
+            © 2023 - SecureHome Solutions. All rights reserved.
+          </p>
+          <p className="text-gray-400 text-xs mt-2">
+            24/7 Emergency Support • 1-800-555-0123
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
