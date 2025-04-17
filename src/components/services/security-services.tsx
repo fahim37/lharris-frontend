@@ -9,7 +9,7 @@ export default function SecurityServices() {
   );
 
   return (
-    <div className="text-white p-4 mt-10 container">
+    <div className="text-white mt-10 container">
       {/* Tab Navigation */}
       <div className="flex justify-center mb-12">
         <div className="rounded-full border-2 border-primary p-1 inline-flex">
