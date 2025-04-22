@@ -5,7 +5,7 @@ interface DashboardLayoutProps {
   children: ReactNode;
   title: string;
   subtitle?: string;
-  userName?: string;
+  userName?: string | null | undefined;
   userRole?: string;
 }
 

@@ -13,10 +13,10 @@ export async function middleware(request: NextRequest) {
 
   // Define public routes that don't require authentication
   const publicRoutes = [
-    "/auth/login",
-    "/auth/register",
-    "/auth/verify",
-    "/auth/forgot-password",
+    "/login",
+    "/register",
+    "/verify",
+    "/forgot-password",
   ];
 
   // Check if the path is a public route
@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith("/_next") &&
     !pathname.includes(".")
   ) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // If the user is authenticated and trying to access an auth route
@@ -43,5 +43,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: "/dashboard",
 };
+
+// export const config = {
+//   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+// };

@@ -94,9 +94,11 @@ export default function Navbar() {
 
         {/* Login Button */}
         <div className="hidden md:block">
-          <Button className="bg-primary hover:bg-yellow-500 text-black text-sm">
-            Login
-          </Button>
+          <Link href="/login">
+            <Button className="bg-primary hover:bg-yellow-500 text-black text-sm">
+              Login
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

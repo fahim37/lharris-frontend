@@ -62,13 +62,17 @@ export function RegisterForm() {
   async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
 
+    console.log("signup", data)
+
     try {
       const result = await registerUser({
-        fullname: data.fullname,
-        email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
+        fullname: data?.fullname,
+        email: data?.email,
+        password: data?.password,
+        confirmPassword: data?.confirmPassword,
       });
+
+      console.log("sign up", result)
 
       if (result.success) {
         toast("Please verify your email to continue.");
@@ -193,14 +197,14 @@ export function RegisterForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="h-12 w-full bg-[#0a1155] hover:bg-[#0a1155]/90"
+            className="h-12 w-full text-white bg-[#0a1155] hover:bg-[#0a1155]/90"
           >
             Sign Up
           </Button>
 
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link href="/auth/login" className="text-[#0a1155] hover:underline">
+            <Link href="/login" className="text-[#0a1155] hover:underline">
               Log In
             </Link>
           </div>
