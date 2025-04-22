@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {
   className?: string;
@@ -83,15 +84,15 @@ export function Sidebar({ className }: SidebarProps) {
     <div className="flex flex-col h-full bg-secondary">
       <div className="p-6 flex justify-center">
         <div className="">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/assets/lhasis-logo.png"
-            alt="Logo"
-            width={100}
-            height={100}
-            className="w-full h-full"
-          />
-        </Link>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/assets/lhasis-logo.png"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="w-full h-full"
+            />
+          </Link>
         </div>
       </div>
       <div className="flex-1 px-3 py-2">
@@ -119,8 +120,9 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
       <div className="p-3 mt-auto">
         <Button
+          onClick={() => signOut({ callbackUrl: "/login" })}
           variant="outline"
-          className="w-full justify-start gap-3 text-secondary-foreground border-secondary-foreground/20 hover:text-primary hover:bg-secondary-foreground/10"
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-md transition-all hover:text-primary text-white border-none"
         >
           <LogOut className="h-5 w-5" />
           <span>Logout</span>
