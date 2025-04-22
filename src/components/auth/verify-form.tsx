@@ -34,7 +34,7 @@ export function VerifyForm() {
         toast.error("Invalid verification code.");
       }
     } catch (error) {
-      toast("Something went wrong");
+      toast("Something went wrong || " + error);
     } finally {
       setIsLoading(false);
     }
