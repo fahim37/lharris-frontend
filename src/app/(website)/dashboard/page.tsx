@@ -9,9 +9,14 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialog";
+import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+
+  const session = useSession();
+  const userInfo = session?.data?.user;
+  console.log(userInfo)
 
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
@@ -21,8 +26,8 @@ export default function DashboardPage() {
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName="Name"
-      userRole="Customer"
+      userName= {userInfo?.name}
+      userRole={userInfo?.role}
     >
       <div className="grid gap-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

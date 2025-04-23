@@ -120,7 +120,7 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
       <div className="p-3 mt-auto">
         <Button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={() => signOut({ callbackUrl: "/" })}
           variant="outline"
           className="flex items-center gap-3 rounded-lg px-3 py-2 text-md transition-all hover:text-primary text-white border-none"
         >
