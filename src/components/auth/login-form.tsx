@@ -92,7 +92,7 @@ export function LoginForm() {
           <h1 className="mt-4 text-[74px] w-[485px] !text-bold mx-auto text-[#f3f3f3]">
             Secure Your Home with Clarity
           </h1>
-          <p className="text-[19px] text-center text-[#F7E39F] font-semibold mt-[21px]">
+          <p className="text-[19px] text-center text-[#F7E39F] font-semibold mt-[21px] ml-[-30px]">
             Monitor your property with ease and peace of mind.
           </p>
         </div>
@@ -101,8 +101,10 @@ export function LoginForm() {
 
       {/* Right section */}
       <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16">
-        <div className="w-full max-w-md mx-auto space-y-6">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome User</h2>
+        <div className="w-full mx-auto space-y-6">
+          <h2 className="text-4xl md:text-6xl font-[600] text-gray-900 text-center">
+            Welcome User
+          </h2>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -139,7 +141,11 @@ export function LoginForm() {
                           {...field}
                           className="h-12"
                         />
-                        <button type="button" className="absolute top-4 right-4" onClick={() => setShowPassword(!showPassword)}>
+                        <button
+                          type="button"
+                          className="absolute top-4 right-4"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
                           {showPassword ? <Eye /> : <EyeOff />}
                         </button>
                       </div>
@@ -190,7 +196,7 @@ export function LoginForm() {
                   href="/sign-up"
                   className="text-[#0a1155] hover:underline"
                 >
-                  Create free account
+                  Create an account
                 </Link>
               </div>
             </form>
