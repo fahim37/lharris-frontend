@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
 interface VisitDetailsDialogProps {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   visit: any
   open: boolean
   onOpenChange: (open: boolean) => void

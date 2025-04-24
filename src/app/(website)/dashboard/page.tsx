@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialog";
 import { useSession } from "next-auth/react";
 
+
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
 
@@ -18,9 +19,12 @@ export default function DashboardPage() {
   const userInfo = session?.data?.user;
   console.log(userInfo)
 
+
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
+
+
 
   return (
     <DashboardLayout

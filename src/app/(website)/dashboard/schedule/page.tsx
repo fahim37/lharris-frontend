@@ -14,58 +14,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialog";
 import { VisitDetailsDialog } from "@/components/dashboard/visit-details-dialog";
 import { toast } from "sonner";
-import { Eye, Edit, Plus } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import PaginationComponent from "@/components/Pagination/Pagination";
 
 // Dummy data for scheduled visits
-const scheduledVisits = [
-  {
-    id: "001",
-    date: "Mar 15, 2025",
-    time: "9:00 AM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "completed",
-    visitType: "Routine Check",
-    notes: "All devices working normally.",
-    actions: ["view", "edit"],
-  },
-  {
-    id: "002",
-    date: "Mar 16, 2025",
-    time: "2:30 PM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "cancelled",
-    visitType: "Follow-up",
-    notes: "Client cancelled due to personal emergency.",
-    actions: ["view", "edit"],
-  },
-  {
-    id: "003",
-    date: "Mar 18, 2025",
-    time: "10:00 AM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "pending",
-    visitType: "Routine Check",
-    notes: "Visit scheduled for next week.",
-    actions: ["view", "edit"],
-  },
-];
+
+
+
+
+
 
 export default function SchedulePage() {
   const [activeTab, setActiveTab] = useState("upcoming-visits");
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [visitDetailsOpen, setVisitDetailsOpen] = useState(false);
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedVisit, setSelectedVisit] = useState<any>(null);
   const [currentMonth] = useState("September 2025");
 
@@ -77,6 +45,51 @@ export default function SchedulePage() {
     setSelectedVisit(visit);
     setVisitDetailsOpen(true);
   };
+
+  const [page, setPage] = useState(1); 
+  console.log(page);
+  
+  const { data, } = useQuery({
+    queryKey: ["scheduledVisits"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-past-visits?page=1&limit=2`, {
+        headers: {
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTQwMDM3NSwiZXhwIjoxNzQ2MDA1MTc1fQ.VpnaMXcj6hO6CXhqpH_Qth1REeHH-oZR1IliEeKcSZ8",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions");
+      }
+
+      const data = await response.json();
+      return data;
+    },
+  });
+  console.log(data);
+ 
+
+  // const { data: upcomingVisits,  } = useQuery({
+  //   queryKey: ["upcomingVisits"],
+  //   queryFn: async () => {
+  //     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-upcoming-visits`, {
+  //       headers: {
+  //         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDMzNTdhMjBlZDFjNTA0MGMxNjEzMyIsImlhdCI6MTc0NTMxMjQ0NSwiZXhwIjoxNzQ1OTE3MjQ1fQ.dfzccsPNmh3Pw6eB9aQxaYs8QtLrLuUyTZwUAqksk30",
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch live auctions");
+  //     }
+
+  //     const data = await response.json();
+  //     return data;
+  //   },
+  // });
+//  console.log(upcomingVisits);
+ 
+
+
 
   return (
     <DashboardLayout
@@ -97,16 +110,17 @@ export default function SchedulePage() {
         </div>
 
         <Tabs defaultValue="upcoming-visits" onValueChange={setActiveTab}>
-          <TabsList className="w-full max-w-md grid grid-cols-3">
-            <TabsTrigger value="upcoming-visits" className="rounded-full">
+          <TabsList className="w-full max-w-md grid grid-cols-2">
+            <TabsTrigger value="past-visits" className="rounded-full">
               Upcoming Visits
             </TabsTrigger>
-            <TabsTrigger value="past-visits" className="rounded-full">
+            <TabsTrigger value="upcoming-visits" className="rounded-full">
               Past Visits
             </TabsTrigger>
-            <TabsTrigger value="requested-visits" className="rounded-full">
+
+            {/* <TabsTrigger value="requested-visits" className="rounded-full">
               Requested Visits
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="upcoming-visits" className="mt-6">
@@ -118,26 +132,28 @@ export default function SchedulePage() {
                       <TableHead className="w-[50px]">ID</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Time</TableHead>
-                      <TableHead>Client</TableHead>
+                      <TableHead>Staff</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Issue</TableHead>
                       <TableHead>Visit Type</TableHead>
                       <TableHead>Notes</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {scheduledVisits.map((visit) => (
+                    {data?.data.map((visit) => (
                       <TableRow key={visit.id}>
                         <TableCell className="font-medium">
-                          {visit.id}
+                          {visit.visitCode}
                         </TableCell>
-                        <TableCell>{visit.date}</TableCell>
-                        <TableCell>{visit.time}</TableCell>
+                        <TableCell>{new Date(visit.updatedAt).toISOString().split("T")[0]}</TableCell>
+                        <TableCell>
+                          {new Date(visit.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </TableCell>
+
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                              {visit.client.name.charAt(0)}
-                            </div>
+                          
                             <div>
                               <div className="font-medium">
                                 {visit.client.name}
@@ -154,22 +170,38 @@ export default function SchedulePage() {
                               visit.status === "completed"
                                 ? "default"
                                 : visit.status === "cancelled"
-                                ? "destructive"
-                                : "outline"
+                                  ? "destructive"
+                                  : "outline"
                             }
                             className={
                               visit.status === "completed"
                                 ? "bg-green-500"
                                 : visit.status === "cancelled"
-                                ? "bg-red-500"
-                                : "bg-yellow-500 text-yellow-950"
+                                  ? "bg-red-500"
+                                  : "bg-yellow-500 text-yellow-950"
                             }
                           >
                             {visit.status.charAt(0).toUpperCase() +
                               visit.status.slice(1)}
                           </Badge>
                         </TableCell>
-                        <TableCell>{visit.visitType}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                            }
+                            className={
+                              !visit.issues || visit.issues.length === 0
+                                ? "bg-green-500"
+                                : "bg-[#E9BFBF] text-[red]"
+                            }
+                          >
+                            {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                          </Badge>
+                        </TableCell>
+
+
+                        <TableCell>{visit.type}</TableCell>
                         <TableCell className="max-w-[200px] truncate">
                           {visit.notes}
                         </TableCell>
@@ -182,9 +214,7 @@ export default function SchedulePage() {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
+                          
                           </div>
                         </TableCell>
                       </TableRow>
@@ -193,60 +223,13 @@ export default function SchedulePage() {
                 </Table>
               </div>
             )}
-            <div className="flex items-center justify-between py-4">
-              <div className="text-sm text-muted-foreground">
-                Showing 1 to {scheduledVisits.length} of 24 results
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="icon" disabled>
-                  <span className="sr-only">Go to previous page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                  1
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 bg-primary text-primary-foreground"
-                >
-                  2
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                  3
-                </Button>
-                <Button variant="outline" size="icon">
-                  <span className="sr-only">Go to next page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </Button>
-              </div>
-            </div>
+            <div className="mt-3 ">
+              <PaginationComponent
+                currentPage={data?.pagination.currentPage}
+                totalPages={data?.pagination.totalPages}
+                onPageChange={(newPage) => setPage(newPage)}
+              />
+          </div>
           </TabsContent>
 
           <TabsContent value="past-visits" className="mt-6">
@@ -335,7 +318,7 @@ export default function SchedulePage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="requested-visits" className="mt-6">
+          {/* <TabsContent value="requested-visits" className="mt-6">
             <Card>
               <CardContent className="p-0">
                 <Table>
@@ -345,6 +328,7 @@ export default function SchedulePage() {
                       <TableHead>Date</TableHead>
                       <TableHead>Time</TableHead>
                       <TableHead>Client</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Visit Type</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -405,7 +389,7 @@ export default function SchedulePage() {
                 </Table>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
 
