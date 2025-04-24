@@ -11,35 +11,37 @@ import { Badge } from "@/components/ui/badge"
 import { Eye,  Download } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import PaginationComponent from "@/components/Pagination/Pagination"
+import { useSession } from "next-auth/react"
 
 // Dummy data for visit boylogs (unchanged)
 
 
-interface Staff {
-  fullname: string;
-  email: string;
-}
+// interface Staff {
+//   fullname: string;
+//   email: string;
+// }
 
-interface Visit {
-  id: string;
-  visitCode: string;
-  createdAt: string;
-  updatedAt: string;
-  staff: Staff | null; // Allow null to handle cases where staff is missing
-  status: string;
-  type: string;
-  notes: string;
-  issues?: string[] | null; // Optional, as it may not always be present
-}
+// interface Visit {
+//   id: string;
+//   visitCode: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   staff: Staff | null; 
+//   status: string;
+//   type: string;
+//   notes: string;
+//   issues?: string[] | null; 
+// }
 
 export default function VisitLogsPage() {
 
-  const [selectedVisit, setSelectedVisit] = useState<Visit | null>(null);
+  const [selectedVisit, setSelectedVisit] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [page, setPage] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
   console.log(currentPage);
-  
+  const session = useSession();
+    const token = session.data?.accessToken;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -57,8 +59,8 @@ export default function VisitLogsPage() {
   // })
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  const handleViewDetails = (visit: Visit) => {
-    setSelectedVisit(visit);
+  const handleViewDetails = (visit: any) => {
+    setSelectedVisit(visit._id);
     setIsDetailsOpen(true);
   };
 
@@ -66,10 +68,10 @@ export default function VisitLogsPage() {
     queryKey: ["allVisits", page], 
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
         {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -87,10 +89,10 @@ export default function VisitLogsPage() {
     queryKey: ["completedVisits", page], 
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-completed-visits-pagination?page=${page}&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-completed-visits-pagination?page=${page}&limit=10`,
         {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -108,10 +110,10 @@ export default function VisitLogsPage() {
     queryKey: ["issueFounded", page],
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-completed-visits-with-issues?page=${page}&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-completed-visits-with-issues?page=${page}&limit=10`,
         {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
+            Authorization: `Bearer ${token}`,
           },
         }
       )
@@ -282,8 +284,8 @@ export default function VisitLogsPage() {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div>
-                            <div className="font-medium">{visit.staff.fullname}</div>
-                            <div className="text-xs text-muted-foreground">{visit.staff.email}</div>
+                            <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                            <div className="text-xs text-muted-foreground">{visit?.staff?.email || "N/A"}</div>
                           </div>
                         </div>
                       </TableCell>
@@ -447,8 +449,8 @@ export default function VisitLogsPage() {
       </div>
 
       {selectedVisit && (
-        <VisitDetailsDialog visit={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
+        <VisitDetailsDialog visitId={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
       )}
     </DashboardLayout>
   )
-}
+} 
