@@ -16,6 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Download, Check, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import PaginationComponent from "@/components/Pagination/Pagination";
 
 // Dummy data for payment history
 const paymentHistory = [
@@ -100,27 +102,65 @@ const subscriptionPlans = [
   },
 ];
 
+
+
 export default function BillingPage() {
-  const [searchQuery] = useState("");
-  const [setActiveTab] = useState("payment-history");
+  const [activeTab, setActiveTab] = useState("payment-history");
+  console.log(activeTab);
+  
+  // const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredPayments = paymentHistory.filter((payment) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      payment.id.toLowerCase().includes(searchLower) ||
-      payment.date.toLowerCase().includes(searchLower) ||
-      payment.type.toLowerCase().includes(searchLower)
-    );
+  const filteredPayments = paymentHistory.filter(() => {
+    // const searchLower = searchQuery.toLowerCase();
+    // return (
+    //   payment.id.toLowerCase().includes(searchLower) ||
+    //   payment.date.toLowerCase().includes(searchLower) ||
+    //   payment.type.toLowerCase().includes(searchLower)
+    // );
+  });
+  console.log(filteredPayments);
+  
+
+  const filteredInvoices = invoices.filter(() => {
+    // const searchLower = searchQuery.toLowerCase();
+    // return (
+    //   invoice.id.toLowerCase().includes(searchLower) ||
+    //   invoice.date.toLowerCase().includes(searchLower) ||
+    //   invoice.status.toLowerCase().includes(searchLower)
+    // );
   });
 
-  const filteredInvoices = invoices.filter((invoice) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      invoice.id.toLowerCase().includes(searchLower) ||
-      invoice.date.toLowerCase().includes(searchLower) ||
-      invoice.status.toLowerCase().includes(searchLower)
-    );
-  });
+  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  console.log(currentPage);
+  
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    setPage(page) 
+  }
+
+
+  const { data } = useQuery({
+    queryKey: ["pymentDetails", page],
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/payments/paymentDetails/67f0b5e939baaffa730ffc11`,
+        {
+          headers: {
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
+          },
+        }
+      )
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions")
+      }
+      const data = await response.json()
+      return data
+    },
+  })
+  console.log(data);
+  
 
   return (
     <DashboardLayout
@@ -152,23 +192,25 @@ export default function BillingPage() {
                     <TableHead>Date</TableHead>
                     <TableHead>Time</TableHead>
                     <TableHead>Amount</TableHead>
-                    <TableHead>Type</TableHead>
+                    {/* <TableHead>Type</TableHead> */}
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPayments.map((payment) => (
+                  {data?.data.map((payment) => (
                     <TableRow key={payment.id}>
                       <TableCell className="font-medium">
-                        {payment.id}
+                        {/* {payment.id} */}
+                        {"225"}
                       </TableCell>
-                      <TableCell>{payment.date}</TableCell>
-                      <TableCell>{payment.time}</TableCell>
+                      <TableCell> {new Date(payment.createdAt).toISOString().split("T")[0]}</TableCell>
+
+                      <TableCell>{new Date(payment.createdAt).toLocaleTimeString()}</TableCell>
                       <TableCell>{payment.amount}</TableCell>
-                      <TableCell>{payment.type}</TableCell>
+                      {/* <TableCell>{payment.type}</TableCell> */}
                       <TableCell>
-                        <Badge className="bg-green-500 text-white">
+                        <Badge className=" bg-[#B3E9C9] text-black">
                           {payment.status}
                         </Badge>
                       </TableCell>
@@ -195,59 +237,12 @@ export default function BillingPage() {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex items-center justify-between py-4">
-              <div className="text-sm text-muted-foreground">
-                Showing 1 to {filteredPayments.length} of 24 results
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="icon" disabled>
-                  <span className="sr-only">Go to previous page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                  1
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 bg-primary text-primary-foreground"
-                >
-                  2
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                  3
-                </Button>
-                <Button variant="outline" size="icon">
-                  <span className="sr-only">Go to next page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </Button>
-              </div>
+            <div className="mt-3">
+              <PaginationComponent
+                currentPage={data?.pagination.currentPage || 1}
+                totalPages={data?.pagination.totalPages || 1}
+                onPageChange={handlePageChange}
+              />
             </div>
           </TabsContent>
 
@@ -300,11 +295,10 @@ export default function BillingPage() {
                       ))}
                     </ul>
                     <Button
-                      className={`w-full mt-6 ${
-                        plan.current
+                      className={`w-full mt-6 ${plan.current
                           ? "bg-secondary text-secondary-foreground"
                           : "bg-primary text-primary-foreground"
-                      }`}
+                        }`}
                       onClick={() =>
                         toast.info(
                           plan.current

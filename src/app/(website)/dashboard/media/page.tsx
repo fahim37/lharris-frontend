@@ -3,77 +3,95 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaViewerDialog } from "@/components/dashboard/media-viewer-dialog";
-import { Search, Filter, Play, Eye, Edit } from "lucide-react";
-import Image from "next/image";
+import { Eye, Download } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import PaginationComponent from "@/components/Pagination/Pagination";
+import { toast } from "react-toastify";
 
-// Dummy data for media
-const mediaItems = [
-  {
-    id: "001",
-    type: "video",
-    date: "Mar 15, 2025",
-    time: "9:00 AM",
-    title: "Front Door Check",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    url: "#",
-    status: "completed",
-  },
-  {
-    id: "002",
-    type: "video",
-    date: "Mar 16, 2025",
-    time: "2:30 PM",
-    title: "Backyard Inspection",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    url: "#",
-    status: "pending",
-  },
-  {
-    id: "003",
-    type: "video",
-    date: "Mar 18, 2025",
-    time: "11:15 AM",
-    title: "Garage Security Check",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    url: "#",
-    status: "completed",
-  },
-  {
-    id: "004",
-    type: "video",
-    date: "Mar 20, 2025",
-    time: "4:45 PM",
-    title: "Perimeter Walk",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    url: "#",
-    status: "cancelled",
-  },
-];
 
 export default function MediaPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const [page, setPage] = useState(1)
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const filteredMedia = mediaItems.filter((item) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      item.title.toLowerCase().includes(searchLower) ||
-      item.date.toLowerCase().includes(searchLower) ||
-      item.status.toLowerCase().includes(searchLower)
-    );
+  const session = useSession()
+
+  const token = session?.data?.accessToken
+
+  const { data, error } = useQuery({ // Capture the error
+    queryKey: ["getallmedia", page], // Include page in the query key
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions");
+      }
+
+      const data = await response.json();
+      return data;
+    }
   });
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  if (error) {
+    return <p>Error loading data.</p>; // Or a more elaborate error message
+  }
 
   const handleViewMedia = (media: any) => {
     setSelectedMedia(media);
     setIsViewerOpen(true);
   };
+
+
+
+  const handleDownloadSingleMedia = async (item: any) => {
+    if (item?.issues && item.issues[0]?.media && item.issues[0].media.length > 0) {
+      for (const mediaItem of item.issues[0].media) {
+        try {
+          const response = await fetch(mediaItem.url);
+          if (!response.ok) {
+            console.error(`Failed to fetch ${mediaItem.type}: ${response.status}`);
+            toast.error(`Failed to download ${mediaItem.type}`);
+            continue; // Skip to the next item
+          }
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${mediaItem.type === 'photo' ? 'jpg' : 'mp4'}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl); // Clean up the Blob URL
+        } catch (error: any) {
+          console.error(`Error downloading ${mediaItem.type}:`, error);
+          toast.error(`Error downloading ${mediaItem.type}`);
+        }
+      }
+      toast.success(`${item.issues[0].media.length} media items download initiated for issue: ${item.type}`);
+    } else {
+      toast.error("No media available to download for this item.");
+    }
+  };
+
+
 
   return (
     <DashboardLayout
@@ -83,155 +101,47 @@ export default function MediaPage() {
       userRole="Customer"
     >
       <div className="space-y-4">
-        <Tabs defaultValue="all-media">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <TabsList>
-              <TabsTrigger value="all-media">All Media</TabsTrigger>
-              <TabsTrigger value="videos">Videos</TabsTrigger>
-              <TabsTrigger value="photos">Photos</TabsTrigger>
-            </TabsList>
-            <div className="flex w-full sm:w-auto gap-2">
-              <div className="relative w-full sm:w-auto">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search media..."
-                  className="pl-8 w-full sm:w-[250px]"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
+        <div className="">
+          {data?.data?.length === 0 ? (
+            <div className="col-span-full text-center py-10">
+              No media found
             </div>
-          </div>
+          ) : (
 
-          <TabsContent value="all-media" className="mt-4">
-            <div className="">
-              {filteredMedia.length === 0 ? (
-                <div className="col-span-full text-center py-10">
-                  No media found
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">ID</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Visit Time</TableHead>
-                      <TableHead>Staff</TableHead>
-                      <TableHead>Issue</TableHead>
-                      <TableHead>Visit Type</TableHead>
-                      <TableHead>Notes</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredMedia.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">
-                          {item.id}
-                        </TableCell>
-                        <TableCell>{item.date}</TableCell>
-                        <TableCell>{item.time}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                              {item.id}
-                            </div>
-                            <div>
-                              <div className="font-medium">
-                                {item.id}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {item.id}
-                              </div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              item.status === "completed"
-                                ? "default"
-                                : item.status === "cancelled"
-                                  ? "destructive"
-                                  : "outline"
-                            }
-                            className={
-                              item.status === "completed"
-                                ? "bg-green-500"
-                                : item.status === "cancelled"
-                                  ? "bg-red-500"
-                                  : "bg-yellow-500 text-yellow-950"
-                            }
-                          >
-                            {item.status.charAt(0).toUpperCase() +
-                              item.status.slice(1)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{item.status}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">
-                          {item.status}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleViewMedia(item)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="videos">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[50px]">ID</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Client</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Visit Type</TableHead>
-                  <TableHead>Notes</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredMedia
-                  .filter((item) => item.type === "video")
-                  .map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-medium">
-                        {item.id}
+            <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-10 overflow-x-auto">
+              <Table className="min-w-[800px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px] text-center pl-10">ID</TableHead>
+                    <TableHead className="text-center">Date</TableHead>
+                    <TableHead className="text-center">Visit Time</TableHead>
+                    <TableHead className="text-center">Staff</TableHead>
+                    <TableHead className="text-center">Issue</TableHead>
+                    <TableHead className="text-center">Visit Type</TableHead>
+                    <TableHead className="text-center">Notes</TableHead>
+                    <TableHead className="text-center">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data?.data?.map((item) => (
+                    <TableRow key={item.id} className="text-center">
+                      <TableCell className="font-medium pl-10 ">
+                        {item.visitCode}
                       </TableCell>
-                      <TableCell>{item.date}</TableCell>
-                      <TableCell>{item.time}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                            {item.id}
-                          </div>
+                        {new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-center gap-2">
                           <div>
                             <div className="font-medium">
-                              {item.id}
+                              {item?.staff?.fullname}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {item.id}
+                              {item?.staff?.email}
                             </div>
                           </div>
                         </div>
@@ -246,23 +156,20 @@ export default function MediaPage() {
                                 : "outline"
                           }
                           className={
-                            item.status === "completed"
-                              ? "bg-green-500"
-                              : item.status === "cancelled"
-                                ? "bg-red-500"
-                                : "bg-yellow-500 text-yellow-950"
+                            item?.issues?.length === 0
+                              ? "bg-[#B3E9C9] text-[#033618]"
+                              : "bg-[#E9BFBF] text-[#B93232]"
                           }
                         >
-                          {item.status.charAt(0).toUpperCase() +
-                            item.status.slice(1)}
+                          {item?.issues?.length === 0 ? "No issue" : "Issue found"}
                         </Badge>
                       </TableCell>
-                      <TableCell>{item.status}</TableCell>
+                      <TableCell className="capitalize">{item?.type}</TableCell>
                       <TableCell className="max-w-[200px] truncate">
-                        {item.status}
+                        {item.notes}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-center gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
@@ -270,30 +177,52 @@ export default function MediaPage() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDownloadSingleMedia(item)}
+                          >
+                            <Download className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
                     </TableRow>
                   ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
-
-          <TabsContent value="photos">
-            <div className="text-center py-10">No photos available</div>
-          </TabsContent>
-        </Tabs>
+                </TableBody>
+              </Table>
+              <div className="flex justify-between items-center pl-9 py-5">
+                <p className="w-1/2">
+                  Showing{' '}
+                  {(data?.pagination?.currentPage - 1) * (data?.pagination?.itemsPerPage || 5) + 1}
+                  {' '}
+                  to{' '}
+                  {Math.min(
+                    data?.pagination?.currentPage * (data?.pagination?.itemsPerPage || 5),
+                    data?.pagination?.totalItems
+                  )}
+                  {' '}
+                  of {data?.pagination?.totalItems} results
+                </p>
+                <PaginationComponent
+                  currentPage={data?.pagination?.currentPage || 1}
+                  totalPages={data?.pagination?.totalPages || 1}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {selectedMedia && (
-        <MediaViewerDialog
-          media={selectedMedia}
-          open={isViewerOpen}
-          onOpenChange={setIsViewerOpen}
-        />
-      )}
-    </DashboardLayout>
+      {
+        selectedMedia && (
+          <MediaViewerDialog
+            media={selectedMedia}
+            open={isViewerOpen}
+            onOpenChange={setIsViewerOpen}
+          />
+        )
+      }
+    </DashboardLayout >
   );
 }
