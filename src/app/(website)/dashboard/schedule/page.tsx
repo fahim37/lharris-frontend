@@ -66,13 +66,14 @@ export default function SchedulePage() {
   const [activeTab, setActiveTab] = useState("upcoming-visits");
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [visitDetailsOpen, setVisitDetailsOpen] = useState(false);
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedVisit, setSelectedVisit] = useState<any>(null);
   const [currentMonth] = useState("September 2025");
 
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewDetails = (visit: any) => {
     setSelectedVisit(visit);
     setVisitDetailsOpen(true);

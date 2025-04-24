@@ -102,7 +102,8 @@ const subscriptionPlans = [
 
 export default function BillingPage() {
   const [searchQuery] = useState("");
-  const [setActiveTab] = useState("payment-history");
+
+  // const [setActiveTab] = useState("payment-history");
 
   const filteredPayments = paymentHistory.filter((payment) => {
     const searchLower = searchQuery.toLowerCase();
@@ -129,8 +130,9 @@ export default function BillingPage() {
       userName="Name"
       userRole="Customer"
     >
+      {/* onValueChange={setActiveTab} */}
       <div className="space-y-6">
-        <Tabs defaultValue="payment-history" onValueChange={setActiveTab}>
+        <Tabs defaultValue="payment-history">
           <TabsList className="w-full max-w-md grid grid-cols-3">
             <TabsTrigger value="payment-history" className="rounded-full">
               Payment History

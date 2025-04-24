@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 
 interface MediaViewerDialogProps {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   media: any;
   open: boolean;
   onOpenChange: (open: boolean) => void;

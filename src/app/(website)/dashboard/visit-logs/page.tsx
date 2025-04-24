@@ -56,6 +56,7 @@ const visitLogs = [
 
 export default function VisitLogsPage() {
   const [searchQuery, setSearchQuery] = useState("")
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedVisit, setSelectedVisit] = useState<any>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
@@ -68,7 +69,7 @@ export default function VisitLogsPage() {
       visit.date.toLowerCase().includes(searchLower)
     )
   })
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewDetails = (visit: any) => {
     setSelectedVisit(visit)
     setIsDetailsOpen(true)
