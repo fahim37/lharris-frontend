@@ -10,12 +10,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialog";
 
+
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+
+
+
+   
 
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
+
+
 
   return (
     <DashboardLayout

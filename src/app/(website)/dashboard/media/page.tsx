@@ -56,6 +56,7 @@ const mediaItems = [
 
 export default function MediaPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
