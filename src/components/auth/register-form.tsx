@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { registerUser } from "@/app/actions/auth";
+import Image from "next/image";
 
 const registerFormSchema = z
   .object({
@@ -62,17 +63,21 @@ export function RegisterForm() {
   async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
 
+    console.log("signup", data);
+
     try {
       const result = await registerUser({
-        fullname: data.fullname,
-        email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
+        fullname: data?.fullname,
+        email: data?.email,
+        password: data?.password,
+        confirmPassword: data?.confirmPassword,
       });
+
+      console.log("sign up", result);
 
       if (result.success) {
         toast("Please verify your email to continue.");
-        router.push("/auth/verify");
+        router.push("/verify");
       } else {
         toast("Registration failed");
       }
@@ -84,128 +89,154 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="space-y-6 py-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Create Your Account</h1>
+    <div className="flex min-h-screen overflow-hidden">
+      <div className="hidden lg:flex w-1/2 bg-[#0a1155] text-white p-12 flex-col justify-between relative ">
+        <div className="border-[7px] border-[#212767] w-[592px] h-[455px] rounded-[400px] absolute lg:-top-[200px] xl:-bottom-[300px] -left-[500px] rotate-[-45deg]"></div>
+        <div>
+          <Link href="/">
+            <Image
+              src="/assets/lhasis-logo.png"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="w-[60px] h-[83px] mb-[101px] ml-[150px]"
+            />
+          </Link>
+          <h1 className="mt-4 text-[74px] w-[485px] !text-bold mx-auto text-[#f3f3f3]">
+            Secure Your Home with Clarity
+          </h1>
+          <p className="text-[19px] text-center text-[#F7E39F] font-semibold mt-[21px] ml-[-30px]">
+            Monitor your property with ease and peace of mind.
+          </p>
+        </div>
+        <div className="border-[7px] border-[white] w-[592px] h-[455px] rounded-[400px] absolute lg:-bottom-[200px] xl:-bottom-[300px] -right-[320px]"></div>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="fullname"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full name</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Enter your full name"
-                    disabled={isLoading}
-                    className="h-12 rounded-md"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-[600] text-center mb-5">
+            Create Your Account
+          </h1>
+        </div>
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email address</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="Enter your email"
-                    disabled={isLoading}
-                    className="h-12 rounded-md"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="fullname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Enter your full name"
+                      disabled={isLoading}
+                      className="h-12 rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    placeholder="Create a password"
-                    disabled={isLoading}
-                    className="h-12 rounded-md"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="Enter your email"
+                      disabled={isLoading}
+                      className="h-12 rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    placeholder="Confirm your password"
-                    disabled={isLoading}
-                    className="h-12 rounded-md"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Create a password"
+                      disabled={isLoading}
+                      className="h-12 rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="termsAccepted"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormLabel className="text-sm font-normal">
-                  Terms & Conditions Acceptance
-                </FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Confirm your password"
+                      disabled={isLoading}
+                      className="h-12 rounded-md"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="h-12 w-full bg-[#0a1155] hover:bg-[#0a1155]/90"
-          >
-            Sign Up
-          </Button>
+            <FormField
+              control={form.control}
+              name="termsAccepted"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm font-normal">
+                    Terms & Conditions Acceptance
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-[#0a1155] hover:underline">
-              Log In
-            </Link>
-          </div>
-        </form>
-      </Form>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-[110px] h-12 bg-[#0a1155] hover:bg-[#0a1155]/90 text-base font-bold text-white"
+            >
+              Sign Up
+            </Button>
+
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{" "}
+              <Link href="/login" className="text-[#0a1155] hover:underline">
+                Log In
+              </Link>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }

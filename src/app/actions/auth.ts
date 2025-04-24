@@ -2,7 +2,9 @@
 
 import { cookies } from "next/headers";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+console.log("url", API_BASE_URL);
 
 export async function registerUser(userData: {
   fullname: string;
@@ -20,6 +22,7 @@ export async function registerUser(userData: {
     });
 
     const data = await response.json();
+    console.log("signup data", data);
 
     if (!response.ok) {
       return {
@@ -46,16 +49,13 @@ export async function loginUser(credentials: {
   password: string;
 }) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
 
     const data = await response.json();
 
@@ -91,7 +91,7 @@ export async function loginUser(credentials: {
 
 export async function verifyCode(code: string) {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/verify`, {
+    const response = await fetch(`${API_BASE_URL}/users/verify-registration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -100,6 +100,7 @@ export async function verifyCode(code: string) {
     });
 
     const data = await response.json();
+    console.log(data, "verify data");
 
     if (!response.ok) {
       return {
