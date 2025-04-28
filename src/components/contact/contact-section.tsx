@@ -1,58 +1,69 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import ContactInformation from "./contact-information";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import ContactInformation from "./contact-information"
+import {toast} from "sonner"
 
 const formSchema = z.object({
-  supportType: z.string().min(1, { message: "Please select a support type" }),
+  inquiryType: z.string().min(1, { message: "Please select an inquiry type" }),
+  fullName: z.string().min(1, { message: "Please enter your full name" }),
   email: z.string().email({ message: "Please enter a valid email" }),
-  confirmEmail: z.string().email({ message: "Please enter a valid email" }),
   phone: z.string().min(1, { message: "Please enter a phone number" }),
-  // countryCode: z.string(),
-  message: z
-    .string()
-    .min(10, { message: "Message must be at least 10 characters" }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
   privacyPolicy: z.boolean().refine((val) => val === true, {
     message: "You must agree to the privacy policy",
   }),
-});
+})
 
 export default function ContactSection() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      supportType: "general",
+      inquiryType: "general",
+      fullName: "",
       email: "",
-      confirmEmail: "",
       phone: "",
       message: "",
       privacyPolicy: false,
     },
-  });
+  })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contactus/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inquiryType: values.inquiryType,
+          fullName: values.fullName,
+          email: values.email,
+          phone: values.phone,
+          message: values.message,
+        }),
+      })
+
+      if (response.ok) {
+        form.reset()
+        toast.success("Message submitted successfully",{position:"top-right"})
+       
+      } else {
+        toast.error("Form submission failed",{position:"top-right"})
+       
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error)
+    
+    }
   }
 
   return (
@@ -61,36 +72,46 @@ export default function ContactSection() {
         {/* Contact Form */}
 
         <div>
-          <div className="text-[28px] md:text-[40px] text-white font-[700] mb-5">
-            Get in Touch
-          </div>
+          <div className="text-[28px] md:text-[40px] text-white font-[700] mb-5">Get in Touch</div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
               <FormField
                 control={form.control}
-                name="supportType"
+                name="inquiryType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white text-[14px] font-[600]">
-                      Inquiry Type*
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <FormLabel className="text-white text-[14px] font-[600]">Inquiry Type*</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full h-12 border-gray-200 rounded-md bg-white text-black">
-                          <SelectValue placeholder="General Support" />
+                          <SelectValue placeholder="Select Inquiry Type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-black">
                         <SelectItem value="general">General Support</SelectItem>
                         <SelectItem value="sales">Sales</SelectItem>
-                        <SelectItem value="technical">
-                          Technical Support
-                        </SelectItem>
+                        <SelectItem value="technical">Technical Support</SelectItem>
+                        <SelectItem value="amar order koi ekhono ashe na kno">My Order Hasn&apos;t Arrived</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white text-[14px] font-[600]">Full Name*</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Your full name"
+                        {...field}
+                        className="h-12 border-gray-200 rounded-md bg-white text-black"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -101,33 +122,11 @@ export default function ContactSection() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white text-[14px] font-[600]">
-                      Full Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="you@company.com"
-                        {...field}
-                        className="h-12 border-gray-200 rounded-md bg-white text-black"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white text-[14px] font-[600]">
-                      Email
-                    </FormLabel>
+                    <FormLabel className="text-white text-[14px] font-[600]">Email*</FormLabel>
 
                     <FormControl>
                       <Input
-                        placeholder="you@company.com"
+                        placeholder="you@example.com"
                         {...field}
                         className="h-12 border-gray-200 rounded-md bg-white text-black"
                       />
@@ -138,40 +137,12 @@ export default function ContactSection() {
               />
 
               <div className="flex">
-                {/* <FormField
-                  control={form.control}
-                  name="countryCode"
-                  render={({ field }) => (
-                    <FormItem className="w-20">
-                      
-
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="h-12 border-gray-200 rounded-l-md border-r-0 bg-white text-black">
-                            <SelectValue placeholder="US" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-white text-black">
-                          <SelectItem value="US">US</SelectItem>
-                          <SelectItem value="CA">CA</SelectItem>
-                          <SelectItem value="UK">UK</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                /> */}
-
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel className="text-white text-[14px] font-[600]">
-                        Phone
-                      </FormLabel>
+                      <FormLabel className="text-white text-[14px] font-[600]">Phone</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="+1 (555) 000-0000"
@@ -190,9 +161,7 @@ export default function ContactSection() {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white text-[14px] font-[600]">
-                      Message
-                    </FormLabel>
+                    <FormLabel className="text-white text-[14px] font-[600]">Message</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Tell us a little about the project..."
@@ -219,9 +188,7 @@ export default function ContactSection() {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <span className="text-white">I agree to </span>
-                      <span className="text-amber-300 text-sm font-normal">
-                        Privacy Policy
-                      </span>
+                      <span className="text-amber-300 text-sm font-normal">Privacy Policy</span>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -239,5 +206,5 @@ export default function ContactSection() {
         <ContactInformation />
       </div>
     </div>
-  );
+  )
 }
