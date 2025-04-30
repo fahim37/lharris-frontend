@@ -18,6 +18,7 @@ import { Download, Check, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "@/components/Pagination/Pagination";
+import { useSession } from "next-auth/react";
 
 // Dummy data for payment history
 const paymentHistory = [
@@ -107,6 +108,9 @@ const subscriptionPlans = [
 export default function BillingPage() {
   const [activeTab, setActiveTab] = useState("payment-history");
   console.log(activeTab);
+
+  const session = useSession();
+    const userInfo = session?.data?.user;
   
   // const [searchQuery, setSearchQuery] = useState("");
 
@@ -166,8 +170,8 @@ export default function BillingPage() {
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName="Name"
-      userRole="Customer"
+      userName= {userInfo?.name}
+      userRole={userInfo?.role}
     >
       <div className="space-y-6">
         <Tabs defaultValue="payment-history" onValueChange={setActiveTab}>

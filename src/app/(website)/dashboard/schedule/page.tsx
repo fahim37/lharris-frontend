@@ -40,6 +40,8 @@ export default function SchedulePage() {
   const session = useSession();
   const token = session.data?.accessToken;
   console.log(token);
+
+  const userInfo = session?.data?.user;
   
  
   
@@ -102,8 +104,8 @@ export default function SchedulePage() {
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName="Name"
-      userRole="Customer"
+      userName= {userInfo?.name}
+      userRole={userInfo?.role}
     >
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

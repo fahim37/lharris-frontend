@@ -21,7 +21,9 @@ export default function MediaPage() {
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const session = useSession()
+ 
+  const session = useSession();
+  const userInfo = session?.data?.user;
 
   const token = session?.data?.accessToken
 
@@ -97,8 +99,8 @@ export default function MediaPage() {
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName="Name"
-      userRole="Customer"
+      userName= {userInfo?.name}
+      userRole={userInfo?.role}
     >
       <div className="space-y-4">
         <div className="">

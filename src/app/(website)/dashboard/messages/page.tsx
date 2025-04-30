@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Search, Send } from "lucide-react"
 import { toast } from "sonner"
+import { useSession } from "next-auth/react"
 
 // Dummy data for messages
 const messageHistory = [
@@ -54,6 +55,9 @@ export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState("")
   const [messages, setMessages] = useState(messageHistory)
 
+  const session = useSession();
+    const userInfo = session?.data?.user;
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newMessage.trim()) return
@@ -72,7 +76,8 @@ export default function MessagesPage() {
   }
 
   return (
-    <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName="Name" userRole="Customer">
+    <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName={userInfo?.name}
+      userRole={userInfo?.role}>
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         <div className="flex items-center gap-2 mb-4">
           <div className="relative flex-1">
@@ -125,15 +130,13 @@ export default function MessagesPage() {
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
                     <div
-                      className={`max-w-[80%] px-4 py-2 rounded-lg ${
-                        msg.isUser ? "bg-primary text-primary-foreground" : "bg-muted"
-                      }`}
+                      className={`max-w-[80%] px-4 py-2 rounded-lg ${msg.isUser ? "bg-primary text-primary-foreground" : "bg-muted"
+                        }`}
                     >
                       <p className="text-sm">{msg.content}</p>
                       <div
-                        className={`text-xs mt-1 ${
-                          msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground"
-                        }`}
+                        className={`text-xs mt-1 ${msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground"
+                          }`}
                       >
                         {msg.timestamp}
                       </div>
