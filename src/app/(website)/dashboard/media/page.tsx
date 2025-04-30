@@ -5,27 +5,35 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { MediaViewerDialog } from "@/components/dashboard/media-viewer-dialog";
 import { Eye, Download } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import PaginationComponent from "@/components/Pagination/Pagination";
 import { toast } from "react-toastify";
 
-
 export default function MediaPage() {
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const session = useSession()
+  const session = useSession();
 
-  const token = session?.data?.accessToken
+  const token = session?.data?.accessToken;
 
-  const { data, error } = useQuery({ // Capture the error
+  const { data, error } = useQuery({
+    // Capture the error
     queryKey: ["getallmedia", page], // Include page in the query key
     queryFn: async () => {
       const response = await fetch(
@@ -43,8 +51,9 @@ export default function MediaPage() {
 
       const data = await response.json();
       return data;
-    }
+    },
   });
+  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -59,23 +68,29 @@ export default function MediaPage() {
     setIsViewerOpen(true);
   };
 
-
-
   const handleDownloadSingleMedia = async (item: any) => {
-    if (item?.issues && item.issues[0]?.media && item.issues[0].media.length > 0) {
+    if (
+      item?.issues &&
+      item.issues[0]?.media &&
+      item.issues[0].media.length > 0
+    ) {
       for (const mediaItem of item.issues[0].media) {
         try {
           const response = await fetch(mediaItem.url);
           if (!response.ok) {
-            console.error(`Failed to fetch ${mediaItem.type}: ${response.status}`);
+            console.error(
+              `Failed to fetch ${mediaItem.type}: ${response.status}`
+            );
             toast.error(`Failed to download ${mediaItem.type}`);
             continue; // Skip to the next item
           }
           const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.href = blobUrl;
-          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${mediaItem.type === 'photo' ? 'jpg' : 'mp4'}`;
+          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${
+            mediaItem.type === "photo" ? "jpg" : "mp4"
+          }`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -85,13 +100,13 @@ export default function MediaPage() {
           toast.error(`Error downloading ${mediaItem.type}`);
         }
       }
-      toast.success(`${item.issues[0].media.length} media items download initiated for issue: ${item.type}`);
+      toast.success(
+        `${item.issues[0].media.length} media items download initiated for issue: ${item.type}`
+      );
     } else {
       toast.error("No media available to download for this item.");
     }
   };
-
-
 
   return (
     <DashboardLayout
@@ -107,12 +122,13 @@ export default function MediaPage() {
               No media found
             </div>
           ) : (
-
             <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-10 overflow-x-auto">
               <Table className="min-w-[800px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[50px] text-center pl-10">ID</TableHead>
+                    <TableHead className="w-[50px] text-center pl-10">
+                      ID
+                    </TableHead>
                     <TableHead className="text-center">Date</TableHead>
                     <TableHead className="text-center">Visit Time</TableHead>
                     <TableHead className="text-center">Staff</TableHead>
@@ -129,10 +145,18 @@ export default function MediaPage() {
                         {item.visitCode}
                       </TableCell>
                       <TableCell>
-                        {new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        {new Date(item.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </TableCell>
                       <TableCell>
-                        {new Date(item.date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                        {new Date(item.date).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-center gap-2">
@@ -152,8 +176,8 @@ export default function MediaPage() {
                             item.status === "completed"
                               ? "default"
                               : item.status === "cancelled"
-                                ? "destructive"
-                                : "outline"
+                              ? "destructive"
+                              : "outline"
                           }
                           className={
                             item?.issues?.length === 0
@@ -161,7 +185,9 @@ export default function MediaPage() {
                               : "bg-[#E9BFBF] text-[#B93232]"
                           }
                         >
-                          {item?.issues?.length === 0 ? "No issue" : "Issue found"}
+                          {item?.issues?.length === 0
+                            ? "No issue"
+                            : "Issue found"}
                         </Badge>
                       </TableCell>
                       <TableCell className="capitalize">{item?.type}</TableCell>
@@ -193,15 +219,16 @@ export default function MediaPage() {
               </Table>
               <div className="flex justify-between items-center pl-9 py-5">
                 <p className="w-1/2">
-                  Showing{' '}
-                  {(data?.pagination?.currentPage - 1) * (data?.pagination?.itemsPerPage || 5) + 1}
-                  {' '}
-                  to{' '}
+                  Showing{" "}
+                  {(data?.pagination?.currentPage - 1) *
+                    (data?.pagination?.itemsPerPage || 5) +
+                    1}{" "}
+                  to{" "}
                   {Math.min(
-                    data?.pagination?.currentPage * (data?.pagination?.itemsPerPage || 5),
+                    data?.pagination?.currentPage *
+                      (data?.pagination?.itemsPerPage || 5),
                     data?.pagination?.totalItems
-                  )}
-                  {' '}
+                  )}{" "}
                   of {data?.pagination?.totalItems} results
                 </p>
                 <PaginationComponent
@@ -215,15 +242,13 @@ export default function MediaPage() {
         </div>
       </div>
 
-      {
-        selectedMedia && (
-          <MediaViewerDialog
-            media={selectedMedia}
-            open={isViewerOpen}
-            onOpenChange={setIsViewerOpen}
-          />
-        )
-      }
-    </DashboardLayout >
+      {selectedMedia && (
+        <MediaViewerDialog
+          media={selectedMedia}
+          open={isViewerOpen}
+          onOpenChange={setIsViewerOpen}
+        />
+      )}
+    </DashboardLayout>
   );
 }

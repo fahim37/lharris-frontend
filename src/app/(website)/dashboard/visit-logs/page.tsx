@@ -1,20 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { Button } from "@/components/ui/button";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { VisitDetailsDialog } from "@/components/dashboard/visit-details-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Eye,  Download } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
-import PaginationComponent from "@/components/Pagination/Pagination"
-import { useSession } from "next-auth/react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { VisitDetailsDialog } from "@/components/dashboard/visit-details-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Eye, Download } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import PaginationComponent from "@/components/Pagination/Pagination";
+import { useSession } from "next-auth/react";
 
 // Dummy data for visit boylogs (unchanged)
-
 
 // interface Staff {
 //   fullname: string;
@@ -26,27 +32,28 @@ import { useSession } from "next-auth/react"
 //   visitCode: string;
 //   createdAt: string;
 //   updatedAt: string;
-//   staff: Staff | null; 
+//   staff: Staff | null;
 //   status: string;
 //   type: string;
 //   notes: string;
-//   issues?: string[] | null; 
+//   issues?: string[] | null;
 // }
 
 export default function VisitLogsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedVisit, setSelectedVisit] = useState(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
-  const [page, setPage] = useState(1)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   console.log(currentPage);
   const session = useSession();
-    const token = session.data?.accessToken;
+  const token = session.data?.accessToken;
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    setPage(page) // Sync both states to ensure consistency
-  }
+    setCurrentPage(page);
+    setPage(page); // Sync both states to ensure consistency
+  };
 
   // const filteredVisits = visitLogs.filter((visit) => {
   //   const searchLower = searchQuery.toLowerCase()
@@ -59,13 +66,13 @@ export default function VisitLogsPage() {
   // })
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  const handleViewDetails = (visit: any) => {
-    setSelectedVisit(visit._id);
-    setIsDetailsOpen(true);
-  };
+  // const handleViewDetails = (visit: any) => {
+  //   setSelectedVisit(visit._id);
+  //   setIsDetailsOpen(true);
+  // };
 
   const { data: allLogs } = useQuery({
-    queryKey: ["allVisits", page], 
+    queryKey: ["allVisits", page],
     queryFn: async () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
@@ -74,19 +81,18 @@ export default function VisitLogsPage() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
       if (!response.ok) {
-        throw new Error("Failed to fetch live auctions")
+        throw new Error("Failed to fetch live auctions");
       }
-      const data = await response.json()
-      return data
+      const data = await response.json();
+      return data;
     },
-  })
+  });
   console.log(allLogs);
-  
 
   const { data } = useQuery({
-    queryKey: ["completedVisits", page], 
+    queryKey: ["completedVisits", page],
     queryFn: async () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-completed-visits-pagination?page=${page}&limit=10`,
@@ -95,16 +101,19 @@ export default function VisitLogsPage() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
       if (!response.ok) {
-        throw new Error("Failed to fetch live auctions")
+        throw new Error("Failed to fetch live auctions");
       }
-      const data = await response.json()
-      return data
+      const data = await response.json();
+      return data;
     },
-  })
-
-  
+  });
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const handleViewDetails = (visit: any) => {
+    setSelectedVisit(visit);
+    setIsDetailsOpen(true);
+  };
 
   const { data: IssueFounded } = useQuery({
     queryKey: ["issueFounded", page],
@@ -116,24 +125,31 @@ export default function VisitLogsPage() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
       if (!response.ok) {
-        throw new Error("Failed to fetch live auctions")
+        throw new Error("Failed to fetch live auctions");
       }
-      const data = await response.json()
-      return data
+      const data = await response.json();
+      return data;
     },
-  })
-  console.log(IssueFounded)
+  });
+  console.log(IssueFounded);
 
   return (
-    <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName="Name" userRole="Customer">
+    <DashboardLayout
+      title="Client Name"
+      subtitle="Client Dashboard"
+      userName="Name"
+      userRole="Customer"
+    >
       <div className="space-y-4">
         <Tabs defaultValue="all-logs">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <TabsList>
               <TabsTrigger value="all-logs">All Logs</TabsTrigger>
-              <TabsTrigger value="completed-visits">Completed Visits</TabsTrigger>
+              <TabsTrigger value="completed-visits">
+                Completed Visits
+              </TabsTrigger>
               <TabsTrigger value="issue-reported">Issue Founded</TabsTrigger>
             </TabsList>
             {/* <div className="flex w-full sm:w-auto gap-2">
@@ -178,9 +194,15 @@ export default function VisitLogsPage() {
                   ) : (
                     allLogs?.data?.map((visit) => (
                       <TableRow key={visit.id}>
-                        <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                        <TableCell className="font-medium">
+                          {visit.visitCode}
+                        </TableCell>
                         <TableCell>
-                          {new Date(visit.createdAt).toISOString().split("T")[0]}
+                          {
+                            new Date(visit.createdAt)
+                              .toISOString()
+                              .split("T")[0]
+                          }
                         </TableCell>
                         <TableCell>
                           {new Date(visit.updatedAt).toLocaleTimeString([], {
@@ -191,7 +213,9 @@ export default function VisitLogsPage() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <div>
-                              <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                              <div className="font-medium">
+                                {visit.staff?.fullname || "N/A"}
+                              </div>
                               <div className="text-xs text-muted-foreground">
                                 {visit.staff?.email || "N/A"}
                               </div>
@@ -204,28 +228,30 @@ export default function VisitLogsPage() {
                               visit.status === "completed"
                                 ? "default"
                                 : visit.status === "cancelled"
-                                  ? "destructive"
-                                  : visit.status === "confirmed"
-                                    ? "secondary"
-                                    : "outline"
+                                ? "destructive"
+                                : visit.status === "confirmed"
+                                ? "secondary"
+                                : "outline"
                             }
                             className={
                               visit.status === "completed"
                                 ? "bg-green-500 text-white"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500 text-white"
-                                  : visit.status === "pending"
-                                    ? "bg-yellow-500 text-yellow-950"
-                                    : visit.status === "confirmed"
-                                      ? "bg-blue-500 text-white"
-                                      : ""
+                                ? "bg-red-500 text-white"
+                                : visit.status === "pending"
+                                ? "bg-yellow-500 text-yellow-950"
+                                : visit.status === "confirmed"
+                                ? "bg-blue-500 text-white"
+                                : ""
                             }
                           >
                             {visit.status.toUpperCase()}
                           </Badge>
                         </TableCell>
                         <TableCell>{visit.type}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                        <TableCell className="max-w-[200px] truncate">
+                          {visit.notes}
+                        </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button
@@ -274,18 +300,28 @@ export default function VisitLogsPage() {
                 <TableBody>
                   {data?.data.map((visit) => (
                     <TableRow key={visit.id}>
-                      <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                      <TableCell className="font-medium">
+                        {visit.visitCode}
+                      </TableCell>
                       <TableCell>
                         {new Date(visit.createdAt).toISOString().split("T")[0]}
                       </TableCell>
                       <TableCell>
-                        {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                        {new Date(visit.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div>
-                            <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
-                            <div className="text-xs text-muted-foreground">{visit?.staff?.email || "N/A"}</div>
+                            <div className="font-medium">
+                              {visit.staff?.fullname || "N/A"}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {visit?.staff?.email || "N/A"}
+                            </div>
                           </div>
                         </div>
                       </TableCell>
@@ -295,24 +331,27 @@ export default function VisitLogsPage() {
                             visit.status === "completed"
                               ? "default"
                               : visit.status === "cancelled"
-                                ? "destructive"
-                                : "outline"
+                              ? "destructive"
+                              : "outline"
                           }
                           className={
                             visit.status === "completed"
                               ? "bg-[#B3E9C9] text-black"
                               : visit.status === "cancelled"
-                                ? "bg-red-500"
-                                : "bg-yellow-500 text-yellow-950"
+                              ? "bg-red-500"
+                              : "bg-yellow-500 text-yellow-950"
                           }
                         >
-                          {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
+                          {visit.status.charAt(0).toUpperCase() +
+                            visit.status.slice(1)}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant={
-                            !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                            !visit.issues || visit.issues.length === 0
+                              ? "default"
+                              : "destructive"
                           }
                           className={
                             !visit.issues || visit.issues.length === 0
@@ -320,14 +359,22 @@ export default function VisitLogsPage() {
                               : "bg-[#E9BFBF] text-[red]"
                           }
                         >
-                          {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                          {!visit.issues || visit.issues.length === 0
+                            ? "No issue"
+                            : "Issue found"}
                         </Badge>
                       </TableCell>
                       <TableCell>{visit.type}</TableCell>
-                      <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {visit.notes}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewDetails(visit)}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon">
@@ -369,18 +416,28 @@ export default function VisitLogsPage() {
                 <TableBody>
                   {IssueFounded?.data.map((visit) => (
                     <TableRow key={visit.id}>
-                      <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                      <TableCell className="font-medium">
+                        {visit.visitCode}
+                      </TableCell>
                       <TableCell>
                         {new Date(visit.createdAt).toISOString().split("T")[0]}
                       </TableCell>
                       <TableCell>
-                        {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                        {new Date(visit.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div>
-                            <div className="font-medium">{visit.staff.fullname}</div>
-                            <div className="text-xs text-muted-foreground">{visit.staff.email}</div>
+                            <div className="font-medium">
+                              {visit.staff.fullname}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {visit.staff.email}
+                            </div>
                           </div>
                         </div>
                       </TableCell>
@@ -390,41 +447,50 @@ export default function VisitLogsPage() {
                             visit.status === "completed"
                               ? "default"
                               : visit.status === "cancelled"
-                                ? "destructive"
-                                : "outline"
+                              ? "destructive"
+                              : "outline"
                           }
                           className={
                             visit.status === "completed"
                               ? "bg-[#B3E9C9] text-black"
                               : visit.status === "cancelled"
-                                ? "bg-red-500"
-                                : "bg-yellow-500 text-yellow-950"
+                              ? "bg-red-500"
+                              : "bg-yellow-500 text-yellow-950"
                           }
                         >
-                          {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
+                          {visit.status.charAt(0).toUpperCase() +
+                            visit.status.slice(1)}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant={
-                            !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                            !visit.issues || visit.issues.length === 0
+                              ? "default"
+                              : "destructive"
                           }
                           className={
-
-
                             !visit.issues || visit.issues.length === 0
                               ? "bg-green-500"
                               : "bg-[#E9BFBF] text-[red]"
                           }
                         >
-                          {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                          {!visit.issues || visit.issues.length === 0
+                            ? "No issue"
+                            : "Issue found"}
                         </Badge>
                       </TableCell>
                       <TableCell>{visit.type}</TableCell>
-                      <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {visit.notes}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewDetails(visit)}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon">
@@ -449,8 +515,12 @@ export default function VisitLogsPage() {
       </div>
 
       {selectedVisit && (
-        <VisitDetailsDialog visitId={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
+        <VisitDetailsDialog
+          visitId={selectedVisit}
+          open={isDetailsOpen}
+          onOpenChange={setIsDetailsOpen}
+        />
       )}
     </DashboardLayout>
-  )
-} 
+  );
+}
