@@ -60,7 +60,11 @@ interface VisitDetailsDialogProps {
   visitId: string;
 }
 
-export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetailsDialogProps) {
+export function VisitDetailsDialog({
+  open,
+  onOpenChange,
+  visitId,
+}: VisitDetailsDialogProps) {
   const { data: session } = useSession();
   const token = session?.accessToken;
 
@@ -109,7 +113,9 @@ export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetails
             <DialogTitle>Error</DialogTitle>
           </DialogHeader>
           <div className="mt-7">
-            <h2 className="text-[24px] text-[#091057] font-bold">Visit Not Found</h2>
+            <h2 className="text-[24px] text-[#091057] font-bold">
+              Visit Not Found
+            </h2>
             <p className="text-base text-[#595959]">
               {error ? error.message : "Unable to load visit details"}
             </p>
@@ -137,7 +143,9 @@ export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetails
             </h2>
             <button
               className="bg-[#091057] text-white rounded-full p-2 hover:bg-[#0a1269] transition-colors"
-              onClick={() => toast("Delete functionality is not yet implemented")}
+              onClick={() =>
+                toast("Delete functionality is not yet implemented")
+              }
               aria-label="Delete visit"
             >
               <Trash2 className="h-5 w-5" />

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
@@ -223,7 +223,11 @@ export default function VisitLogsPage() {
                       <TableRow key={visit._id}>
                         <TableCell className="font-medium">{visit.visitCode}</TableCell>
                         <TableCell>
-                          {new Date(visit.createdAt).toISOString().split("T")[0]}
+                          {
+                            new Date(visit.createdAt)
+                              .toISOString()
+                              .split("T")[0]
+                          }
                         </TableCell>
                         <TableCell>
                           {new Date(visit.updatedAt).toLocaleTimeString([], {
@@ -234,7 +238,9 @@ export default function VisitLogsPage() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <div>
-                              <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                              <div className="font-medium">
+                                {visit.staff?.fullname || "N/A"}
+                              </div>
                               <div className="text-xs text-muted-foreground">
                                 {visit.staff?.email || "N/A"}
                               </div>
@@ -247,28 +253,30 @@ export default function VisitLogsPage() {
                               visit.status === "completed"
                                 ? "default"
                                 : visit.status === "cancelled"
-                                  ? "destructive"
-                                  : visit.status === "confirmed"
-                                    ? "secondary"
-                                    : "outline"
+                                ? "destructive"
+                                : visit.status === "confirmed"
+                                ? "secondary"
+                                : "outline"
                             }
                             className={
                               visit.status === "completed"
                                 ? "bg-green-500 text-white"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500 text-white"
-                                  : visit.status === "pending"
-                                    ? "bg-yellow-500 text-yellow-950"
-                                    : visit.status === "confirmed"
-                                      ? "bg-blue-500 text-white"
-                                      : ""
+                                ? "bg-red-500 text-white"
+                                : visit.status === "pending"
+                                ? "bg-yellow-500 text-yellow-950"
+                                : visit.status === "confirmed"
+                                ? "bg-blue-500 text-white"
+                                : ""
                             }
                           >
                             {visit.status.toUpperCase()}
                           </Badge>
                         </TableCell>
                         <TableCell>{visit.type}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                        <TableCell className="max-w-[200px] truncate">
+                          {visit.notes}
+                        </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button
@@ -505,7 +513,11 @@ export default function VisitLogsPage() {
       </div>
 
       {selectedVisit && (
-        <VisitDetailsDialog visitId={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
+        <VisitDetailsDialog
+          visitId={selectedVisit}
+          open={isDetailsOpen}
+          onOpenChange={setIsDetailsOpen}
+        />
       )}
     </DashboardLayout>
   );

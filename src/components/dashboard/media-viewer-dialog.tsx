@@ -173,6 +173,7 @@ export function MediaViewerDialog({
         <DialogFooter>
           <Button
             className="bg-[#091057]"
+            disabled={!media?.issues[0]?.media}
             // CHANGED: Modified the onClick handler to call handleDownloadAll
             onClick={handleDownloadAll}
           >
