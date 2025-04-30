@@ -1,58 +1,37 @@
-
 "use client"
 
 import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { VisitDetailsDialog } from "@/components/dashboard/visit-details-dialog"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, Eye, Edit } from "lucide-react"
+import { Eye,  Download } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+import PaginationComponent from "@/components/Pagination/Pagination"
+import { useSession } from "next-auth/react"
 
-// Dummy data for visit logs
-const visitLogs = [
-  {
-    id: "001",
-    date: "Mar 15, 2025",
-    time: "9:00 AM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "completed",
-    visitType: "Routine Check",
-    notes: "Visit completed on time, all systems checked and functioning properly.",
-    actions: ["view", "edit"],
-  },
-  {
-    id: "002",
-    date: "Mar 16, 2025",
-    time: "9:00 AM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "cancelled",
-    visitType: "Follow-up",
-    notes: "Client cancelled due to personal emergency.",
-    actions: ["view", "edit"],
-  },
-  {
-    id: "003",
-    date: "Mar 18, 2025",
-    time: "9:00 AM",
-    client: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-    },
-    status: "pending",
-    visitType: "Routine Check",
-    notes: "All devices working normally.",
-    actions: ["view", "edit"],
-  },
-]
+// Dummy data for visit boylogs (unchanged)
+
+
+// interface Staff {
+//   fullname: string;
+//   email: string;
+// }
+
+// interface Visit {
+//   id: string;
+//   visitCode: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   staff: Staff | null; 
+//   status: string;
+//   type: string;
+//   notes: string;
+//   issues?: string[] | null; 
+// }
 
 export default function VisitLogsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -60,20 +39,101 @@ export default function VisitLogsPage() {
   const [selectedVisit, setSelectedVisit] = useState<any>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
-  const filteredVisits = visitLogs.filter((visit) => {
-    const searchLower = searchQuery.toLowerCase()
-    return (
-      visit.client.name.toLowerCase().includes(searchLower) ||
-      visit.visitType.toLowerCase().includes(searchLower) ||
-      visit.status.toLowerCase().includes(searchLower) ||
-      visit.date.toLowerCase().includes(searchLower)
-    )
+  const [selectedVisit, setSelectedVisit] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  console.log(currentPage);
+  const session = useSession();
+    const token = session.data?.accessToken;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    setPage(page) // Sync both states to ensure consistency
+  }
+
+  // const filteredVisits = visitLogs.filter((visit) => {
+  //   const searchLower = searchQuery.toLowerCase()
+  //   return (
+  //     visit.client.name.toLowerCase().includes(searchLower) ||
+  //     visit.visitType.toLowerCase().includes(searchLower) ||
+  //     visit.status.toLowerCase().includes(searchLower) ||
+  //     visit.date.toLowerCase().includes(searchLower)
+  //   )
+  // })
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const handleViewDetails = (visit: any) => {
+    setSelectedVisit(visit._id);
+    setIsDetailsOpen(true);
+  };
+
+  const { data: allLogs } = useQuery({
+    queryKey: ["allVisits", page], 
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions")
+      }
+      const data = await response.json()
+      return data
+    },
+  })
+  console.log(allLogs);
+  
+
+  const { data } = useQuery({
+    queryKey: ["completedVisits", page], 
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-completed-visits-pagination?page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions")
+      }
+      const data = await response.json()
+      return data
+    },
   })
 /* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewDetails = (visit: any) => {
     setSelectedVisit(visit)
     setIsDetailsOpen(true)
   }
+
+  
+
+  const { data: IssueFounded } = useQuery({
+    queryKey: ["issueFounded", page],
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-completed-visits-with-issues?page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      if (!response.ok) {
+        throw new Error("Failed to fetch live auctions")
+      }
+      const data = await response.json()
+      return data
+    },
+  })
+  console.log(IssueFounded)
 
   return (
     <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName="Name" userRole="Customer">
@@ -83,9 +143,9 @@ export default function VisitLogsPage() {
             <TabsList>
               <TabsTrigger value="all-logs">All Logs</TabsTrigger>
               <TabsTrigger value="completed-visits">Completed Visits</TabsTrigger>
-              <TabsTrigger value="issue-reported">Issue Reported</TabsTrigger>
+              <TabsTrigger value="issue-reported">Issue Founded</TabsTrigger>
             </TabsList>
-            <div className="flex w-full sm:w-auto gap-2">
+            {/* <div className="flex w-full sm:w-auto gap-2">
               <div className="relative w-full sm:w-auto">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -99,7 +159,7 @@ export default function VisitLogsPage() {
               <Button variant="outline" size="icon">
                 <Filter className="h-4 w-4" />
               </Button>
-            </div>
+            </div> */}
           </div>
 
           <TabsContent value="all-logs" className="mt-4">
@@ -110,7 +170,7 @@ export default function VisitLogsPage() {
                     <TableHead className="w-[50px]">ID</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Time</TableHead>
-                    <TableHead>Client</TableHead>
+                    <TableHead>Staff</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Visit Type</TableHead>
                     <TableHead>Notes</TableHead>
@@ -118,26 +178,32 @@ export default function VisitLogsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVisits.length === 0 ? (
+                  {allLogs?.data?.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={8} className="text-center py-4">
                         No visits found
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredVisits.map((visit) => (
+                    allLogs?.data?.map((visit) => (
                       <TableRow key={visit.id}>
-                        <TableCell className="font-medium">{visit.id}</TableCell>
-                        <TableCell>{visit.date}</TableCell>
-                        <TableCell>{visit.time}</TableCell>
+                        <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                        <TableCell>
+                          {new Date(visit.createdAt).toISOString().split("T")[0]}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(visit.updatedAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                              {visit.client.name.charAt(0)}
-                            </div>
                             <div>
-                              <div className="font-medium">{visit.client.name}</div>
-                              <div className="text-xs text-muted-foreground">{visit.client.email}</div>
+                              <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {visit.staff?.email || "N/A"}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -148,28 +214,38 @@ export default function VisitLogsPage() {
                                 ? "default"
                                 : visit.status === "cancelled"
                                   ? "destructive"
-                                  : "outline"
+                                  : visit.status === "confirmed"
+                                    ? "secondary"
+                                    : "outline"
                             }
                             className={
                               visit.status === "completed"
-                                ? "bg-green-500"
+                                ? "bg-green-500 text-white"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500"
-                                  : "bg-yellow-500 text-yellow-950"
+                                  ? "bg-red-500 text-white"
+                                  : visit.status === "pending"
+                                    ? "bg-yellow-500 text-yellow-950"
+                                    : visit.status === "confirmed"
+                                      ? "bg-blue-500 text-white"
+                                      : ""
                             }
                           >
-                            {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
+                            {visit.status.toUpperCase()}
                           </Badge>
                         </TableCell>
-                        <TableCell>{visit.visitType}</TableCell>
+                        <TableCell>{visit.type}</TableCell>
                         <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleViewDetails(visit)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
+                              <Download className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -179,16 +255,12 @@ export default function VisitLogsPage() {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <div className="text-sm text-muted-foreground">
-                Showing 1 to {filteredVisits.length} of {filteredVisits.length} results
-              </div>
-              <Button variant="outline" size="sm" disabled>
-                Previous
-              </Button>
-              <Button variant="outline" size="sm" disabled>
-                Next
-              </Button>
+            <div className="mt-3">
+              <PaginationComponent
+                currentPage={allLogs?.pagination.currentPage || 1}
+                totalPages={allLogs?.pagination.totalPages || 1}
+                onPageChange={handlePageChange}
+              />
             </div>
           </TabsContent>
 
@@ -199,48 +271,91 @@ export default function VisitLogsPage() {
                   <TableRow>
                     <TableHead className="w-[50px]">ID</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Client</TableHead>
+                    <TableHead>Visit Time</TableHead>
+                    <TableHead>Staff</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Issue</TableHead>
                     <TableHead>Visit Type</TableHead>
                     <TableHead>Notes</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVisits
-                    .filter((visit) => visit.status === "completed")
-                    .map((visit) => (
-                      <TableRow key={visit.id}>
-                        <TableCell className="font-medium">{visit.id}</TableCell>
-                        <TableCell>{visit.date}</TableCell>
-                        <TableCell>{visit.time}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                              {visit.client.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div className="font-medium">{visit.client.name}</div>
-                              <div className="text-xs text-muted-foreground">{visit.client.email}</div>
-                            </div>
+                  {data?.data.map((visit) => (
+                    <TableRow key={visit.id}>
+                      <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                      <TableCell>
+                        {new Date(visit.createdAt).toISOString().split("T")[0]}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                            <div className="text-xs text-muted-foreground">{visit?.staff?.email || "N/A"}</div>
                           </div>
-                        </TableCell>
-                        <TableCell>{visit.visitType}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            visit.status === "completed"
+                              ? "default"
+                              : visit.status === "cancelled"
+                                ? "destructive"
+                                : "outline"
+                          }
+                          className={
+                            visit.status === "completed"
+                              ? "bg-[#B3E9C9] text-black"
+                              : visit.status === "cancelled"
+                                ? "bg-red-500"
+                                : "bg-yellow-500 text-yellow-950"
+                          }
+                        >
+                          {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                          }
+                          className={
+                            !visit.issues || visit.issues.length === 0
+                              ? "bg-[#B3E9C9] text-black"
+                              : "bg-[#E9BFBF] text-[red]"
+                          }
+                        >
+                          {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{visit.type}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
+            </div>
+            <div className="mt-3">
+              <h1>Current Page: {data?.pagination.currentPage}</h1>
+              <PaginationComponent
+                currentPage={data?.pagination.currentPage || 1}
+                totalPages={data?.pagination.totalPages || 1}
+                onPageChange={handlePageChange}
+              />
             </div>
           </TabsContent>
 
@@ -251,29 +366,100 @@ export default function VisitLogsPage() {
                   <TableRow>
                     <TableHead className="w-[50px]">ID</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Visit Type</TableHead>
+                    <TableHead>Visit Time</TableHead>
+                    <TableHead>Staff</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Issue</TableHead>
+                    <TableHead>Visit Type</TableHead>
+                    <TableHead>Notes</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-4">
-                      No issues reported
-                    </TableCell>
-                  </TableRow>
+                  {IssueFounded?.data.map((visit) => (
+                    <TableRow key={visit.id}>
+                      <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                      <TableCell>
+                        {new Date(visit.createdAt).toISOString().split("T")[0]}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <div className="font-medium">{visit.staff.fullname}</div>
+                            <div className="text-xs text-muted-foreground">{visit.staff.email}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            visit.status === "completed"
+                              ? "default"
+                              : visit.status === "cancelled"
+                                ? "destructive"
+                                : "outline"
+                          }
+                          className={
+                            visit.status === "completed"
+                              ? "bg-[#B3E9C9] text-black"
+                              : visit.status === "cancelled"
+                                ? "bg-red-500"
+                                : "bg-yellow-500 text-yellow-950"
+                          }
+                        >
+                          {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                          }
+                          className={
+
+
+                            !visit.issues || visit.issues.length === 0
+                              ? "bg-green-500"
+                              : "bg-[#E9BFBF] text-[red]"
+                          }
+                        >
+                          {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{visit.type}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
+            </div>
+            <div className="mt-3">
+              <PaginationComponent
+                currentPage={IssueFounded?.pagination.currentPage || 1}
+                totalPages={IssueFounded?.pagination.totalPages || 1}
+                onPageChange={handlePageChange}
+              />
             </div>
           </TabsContent>
         </Tabs>
       </div>
 
       {selectedVisit && (
-        <VisitDetailsDialog visit={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
+        <VisitDetailsDialog visitId={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
       )}
     </DashboardLayout>
   )
-}
+} 

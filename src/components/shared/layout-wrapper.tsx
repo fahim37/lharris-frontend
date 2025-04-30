@@ -5,6 +5,10 @@ import { usePathname } from "next/navigation";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import CTASection from "../landing/cta-section";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 export default function LayoutWrapper({
   children,
@@ -13,21 +17,25 @@ export default function LayoutWrapper({
 }) {
   const pathname = usePathname();
   const isDashboardRoute = pathname.startsWith("/dashboard");
-
+  const queryClient = new QueryClient()
   return (
     <>
-      {!isDashboardRoute && (
+      <QueryClientProvider
+        client={queryClient}
+      >
+        {!isDashboardRoute && (
         <div className="sticky top-0 z-50">
           <Navbar />
         </div>
       )}
-      <main>{children}</main>
-      {!isDashboardRoute && (
-        <>
-          <CTASection />
-          <Footer />
-        </>
-      )}
+        <main>{children}</main>
+        {!isDashboardRoute && (
+          <>
+            <CTASection />
+            <Footer />
+          </>
+        )}
+      </QueryClientProvider>
     </>
   );
 }
