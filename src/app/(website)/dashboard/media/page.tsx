@@ -29,7 +29,7 @@ export default function MediaPage() {
     queryKey: ["getallmedia", page], // Include page in the query key
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-all-visits?page=${page}&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-all-visit`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@ export default function MediaPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.data?.map((item) => (
+                  {data?.data?.map((item, i) => (
                     <TableRow key={item.id} className="text-center">
                       <TableCell className="font-medium pl-10 ">
                         {item.visitCode}
@@ -178,6 +178,7 @@ export default function MediaPage() {
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
+                          disabled={item.issues?.length === 0}
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDownloadSingleMedia(item)}
