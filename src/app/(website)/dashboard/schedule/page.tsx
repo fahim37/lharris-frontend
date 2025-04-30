@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { Eye, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "@/components/Pagination/Pagination";
+import { useSession } from "next-auth/react";
 
 // Dummy data for scheduled visits
 
@@ -36,15 +37,21 @@ export default function SchedulePage() {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedVisit, setSelectedVisit] = useState<any>(null);
   const [currentMonth] = useState("September 2025");
-
+  const session = useSession();
+  const token = session.data?.accessToken;
+  console.log(token);
+  
+ 
+  
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
 
   const handleViewDetails = (visit: any) => {
-    setSelectedVisit(visit);
+    setSelectedVisit(visit._id);
     setVisitDetailsOpen(true);
   };
+  console.log(selectedVisit);
 
   const [page, setPage] = useState(1); 
   console.log(page);
@@ -52,9 +59,9 @@ export default function SchedulePage() {
   const { data, } = useQuery({
     queryKey: ["scheduledVisits"],
     queryFn: async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/visits/client/get-past-visits?page=1&limit=2`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-past-visits?page=1&limit=5`, {
         headers: {
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTQwMDM3NSwiZXhwIjoxNzQ2MDA1MTc1fQ.VpnaMXcj6hO6CXhqpH_Qth1REeHH-oZR1IliEeKcSZ8",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -399,9 +406,11 @@ export default function SchedulePage() {
       />
       {selectedVisit && (
         <VisitDetailsDialog
-          visit={selectedVisit}
+       
+          visitId={selectedVisit}
           open={visitDetailsOpen}
           onOpenChange={setVisitDetailsOpen}
+         
         />
       )}
     </DashboardLayout>
