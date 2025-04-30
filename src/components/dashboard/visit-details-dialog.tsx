@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
@@ -67,6 +67,37 @@ export function VisitDetailsDialog({
 }: VisitDetailsDialogProps) {
   const { data: session } = useSession();
   const token = session?.accessToken;
+  const queryClient = useQueryClient();
+
+  // Delete visit mutation
+  const deleteVisitMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/issues/delete-visit/${visitId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete visit");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success("Visit deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["visits"] });
+      onOpenChange(false);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete visit");
+    },
+  });
 
   const { data: visit, isLoading, error } = useQuery<{ data: Visit }>({
     queryKey: ["visit", visitId],
@@ -89,6 +120,12 @@ export function VisitDetailsDialog({
     },
     enabled: !!token && !!visitId,
   });
+
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this visit? This action cannot be undone.")) {
+      deleteVisitMutation.mutate();
+    }
+  };
 
   if (isLoading) {
     return (
@@ -142,11 +179,10 @@ export function VisitDetailsDialog({
                 : "N/A"}
             </h2>
             <button
-              className="bg-[#091057] text-white rounded-full p-2 hover:bg-[#0a1269] transition-colors"
-              onClick={() =>
-                toast("Delete functionality is not yet implemented")
-              }
+              className="bg-[#091057] text-white rounded-full p-2 hover:bg-[#0a1269] transition-colors disabled:opacity-50"
+              onClick={handleDelete}
               aria-label="Delete visit"
+              disabled={deleteVisitMutation.isPending}
             >
               <Trash2 className="h-5 w-5" />
             </button>
