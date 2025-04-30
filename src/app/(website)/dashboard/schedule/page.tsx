@@ -25,49 +25,41 @@ import { useSession } from "next-auth/react";
 
 // Dummy data for scheduled visits
 
-
-
-
-
-
 export default function SchedulePage() {
   const [activeTab, setActiveTab] = useState("upcoming-visits");
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [visitDetailsOpen, setVisitDetailsOpen] = useState(false);
-<<<<<<< HEAD
-/* eslint-disable @typescript-eslint/no-explicit-any */
-=======
   /* eslint-disable @typescript-eslint/no-explicit-any */
->>>>>>> 03992f111b5644ff250dc76dcb484fddebff671d
   const [selectedVisit, setSelectedVisit] = useState<any>(null);
   const [currentMonth] = useState("September 2025");
   const session = useSession();
   const token = session.data?.accessToken;
   console.log(token);
-  
- 
-  
+
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
-/* eslint-disable @typescript-eslint/no-explicit-any */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewDetails = (visit: any) => {
     setSelectedVisit(visit._id);
     setVisitDetailsOpen(true);
   };
   console.log(selectedVisit);
 
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
   console.log(page);
-  
-  const { data, } = useQuery({
+
+  const { data } = useQuery({
     queryKey: ["scheduledVisits"],
     queryFn: async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-past-visits?page=1&limit=5`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/client/get-past-visits?page=1&limit=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch live auctions");
@@ -78,7 +70,6 @@ export default function SchedulePage() {
     },
   });
   console.log(data);
- 
 
   // const { data: upcomingVisits,  } = useQuery({
   //   queryKey: ["upcomingVisits"],
@@ -97,10 +88,7 @@ export default function SchedulePage() {
   //     return data;
   //   },
   // });
-//  console.log(upcomingVisits);
- 
-
-
+  //  console.log(upcomingVisits);
 
   return (
     <DashboardLayout
@@ -157,14 +145,22 @@ export default function SchedulePage() {
                         <TableCell className="font-medium">
                           {visit.visitCode}
                         </TableCell>
-                        <TableCell>{new Date(visit.updatedAt).toISOString().split("T")[0]}</TableCell>
                         <TableCell>
-                          {new Date(visit.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          {
+                            new Date(visit.updatedAt)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {new Date(visit.updatedAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </TableCell>
 
                         <TableCell>
                           <div className="flex items-center gap-2">
-                          
                             <div>
                               <div className="font-medium">
                                 {visit.client.name}
@@ -181,15 +177,15 @@ export default function SchedulePage() {
                               visit.status === "completed"
                                 ? "default"
                                 : visit.status === "cancelled"
-                                  ? "destructive"
-                                  : "outline"
+                                ? "destructive"
+                                : "outline"
                             }
                             className={
                               visit.status === "completed"
                                 ? "bg-green-500"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500"
-                                  : "bg-yellow-500 text-yellow-950"
+                                ? "bg-red-500"
+                                : "bg-yellow-500 text-yellow-950"
                             }
                           >
                             {visit.status.charAt(0).toUpperCase() +
@@ -199,7 +195,9 @@ export default function SchedulePage() {
                         <TableCell>
                           <Badge
                             variant={
-                              !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
+                              !visit.issues || visit.issues.length === 0
+                                ? "default"
+                                : "destructive"
                             }
                             className={
                               !visit.issues || visit.issues.length === 0
@@ -207,10 +205,11 @@ export default function SchedulePage() {
                                 : "bg-[#E9BFBF] text-[red]"
                             }
                           >
-                            {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
+                            {!visit.issues || visit.issues.length === 0
+                              ? "No issue"
+                              : "Issue found"}
                           </Badge>
                         </TableCell>
-
 
                         <TableCell>{visit.type}</TableCell>
                         <TableCell className="max-w-[200px] truncate">
@@ -225,7 +224,6 @@ export default function SchedulePage() {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                          
                           </div>
                         </TableCell>
                       </TableRow>
@@ -240,7 +238,7 @@ export default function SchedulePage() {
                 totalPages={data?.pagination.totalPages}
                 onPageChange={(newPage) => setPage(newPage)}
               />
-          </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="past-visits" className="mt-6">
@@ -410,11 +408,9 @@ export default function SchedulePage() {
       />
       {selectedVisit && (
         <VisitDetailsDialog
-       
           visitId={selectedVisit}
           open={visitDetailsOpen}
           onOpenChange={setVisitDetailsOpen}
-         
         />
       )}
     </DashboardLayout>

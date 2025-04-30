@@ -12,25 +12,12 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
-<<<<<<< HEAD
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-
-interface VisitDetailsDialogProps {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  visit: any
-  open: boolean
-  onOpenChange: (open: boolean) => void
-=======
 // Define interfaces
 interface Staff {
   _id: string;
   fullname: string;
   email: string;
   role: string;
->>>>>>> 03992f111b5644ff250dc76dcb484fddebff671d
 }
 
 interface Visit {
@@ -43,7 +30,7 @@ interface Visit {
   notes: string;
   address: string;
   report: string;
-  data:[]
+  data: [];
 }
 
 interface VisitDetailsDialogProps {
@@ -52,11 +39,19 @@ interface VisitDetailsDialogProps {
   visitId: string;
 }
 
-export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetailsDialogProps) {
+export function VisitDetailsDialog({
+  open,
+  onOpenChange,
+  visitId,
+}: VisitDetailsDialogProps) {
   const { data: session } = useSession();
   const token = session?.accessToken;
 
-  const { data: visit, isLoading, error } = useQuery<Visit>({
+  const {
+    data: visit,
+    isLoading,
+    error,
+  } = useQuery<Visit>({
     queryKey: ["visit", visitId],
     queryFn: async () => {
       const response = await fetch(
@@ -79,9 +74,7 @@ export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetails
   });
   console.log(visit?.data);
   // const visitData = visit?.data.map((item) => item) ;
-  // console.log(visitData); 
-  
-  
+  // console.log(visitData);
 
   if (isLoading) {
     return (
@@ -106,7 +99,9 @@ export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetails
             <DialogTitle>Error</DialogTitle>
           </DialogHeader>
           <div className="mt-7">
-            <h2 className="text-[24px] text-[#091057] font-bold">Visit Not Found</h2>
+            <h2 className="text-[24px] text-[#091057] font-bold">
+              Visit Not Found
+            </h2>
             <p className="text-base text-[#595959]">
               {error ? error.message : "Unable to load visit details"}
             </p>
@@ -131,7 +126,9 @@ export function VisitDetailsDialog({ open, onOpenChange, visitId }: VisitDetails
             </h2>
             <button
               className="bg-[#091057] text-white rounded-full p-2 hover:bg-[#0a1269] transition-colors"
-              onClick={() => toast("Delete functionality is not yet implemented")}
+              onClick={() =>
+                toast("Delete functionality is not yet implemented")
+              }
               aria-label="Delete visit"
             >
               <Trash2 className="h-5 w-5" />
