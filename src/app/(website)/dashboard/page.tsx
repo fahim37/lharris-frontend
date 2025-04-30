@@ -10,27 +10,46 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialog";
 import { useSession } from "next-auth/react";
-
+import { useQuery } from "@tanstack/react-query";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
 
   const session = useSession();
   const userInfo = session?.data?.user;
-  console.log(userInfo)
-
+  const userID = session?.data?.user?.id
+  const token = session?.data?.accessToken;
 
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
 
+  const {data : pendingMessage = ""} =  useQuery({
+    queryKey : ['[pending-message'],
+    queryFn : async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/pending-count/${userID}`, {
+        headers : {
+          Authorization : `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch pending messages');
+      }
+
+      const data = await res.json();
+      return data;
+    }
+  })
+
+  console.log(pendingMessage)
 
 
   return (
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName= {userInfo?.name}
+      userName={userInfo?.name}
       userRole={userInfo?.role}
     >
       <div className="grid gap-6">
@@ -55,7 +74,7 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">3</div>
+              <div className="text-3xl font-bold">{pendingMessage?.data}</div>
               <div className="text-xs text-muted-foreground mt-1">
                 Last: 2 hours ago
               </div>
@@ -74,7 +93,7 @@ export default function DashboardPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 gap-1"
+                    className="h-8 gap-1 bg-[#091057] text-white"
                     onClick={() => toast.info("Video viewer would open here")}
                   >
                     <Eye className="h-3.5 w-3.5" />
@@ -94,25 +113,26 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div>
-              <h3 className="text-lg font-medium mb-4">
-                Available Time Slots:
-              </h3>
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex gap-2">
-                  <select className="px-3 py-2 rounded-md border">
-                    <option>Day</option>
-                  </select>
-                  <select className="px-3 py-2 rounded-md border">
-                    <option>Month</option>
-                  </select>
+              <div className="flex items-center justify-between mb-5 mt-2">
+                <h3 className="text-2xl font-medium">
+                  Available Time Slots:
+                </h3>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    <select className="px-3 py-2 rounded-md border w-[221px] bg-inherit">
+                      <option>Day</option>
+                    </select>
+                    <select className="px-3 py-2 rounded-md border w-[221px] bg-inherit">
+                      <option>Month</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mb-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 mb-4">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <Button
                     key={i}
-                    variant="outline"
-                    className="text-xs py-1 px-2"
+                    className="text-xs py-1 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[] hover:bg-[#091057] hover:text-white"
                     onClick={handleScheduleVisit}
                   >
                     Mar 30, {9 + Math.floor(i / 2)}:{i % 2 === 0 ? "00" : "30"}{" "}
@@ -122,7 +142,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-end">
                 <Button
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="bg-[#091057] hover:bg-[#091057] text-white"
                   onClick={handleScheduleVisit}
                 >
                   Schedule Visit
