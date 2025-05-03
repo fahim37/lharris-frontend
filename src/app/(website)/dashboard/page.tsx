@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
-import { Eye } from "lucide-react";
+// import Link from "next/link";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,14 @@ import { ScheduleVisitDialog } from "@/components/dashboard/schedule-visit-dialo
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
@@ -17,10 +24,15 @@ export default function DashboardPage() {
   const userID = session?.data?.user?.id;
   const token = session?.data?.accessToken;
 
+  const [selectedMonthFromPage, setSelectedMonthFromPage] = useState("");
+  const [selectedDateFromPage, setSelectedDateFromPage] = useState("");
+  const [selectedTimeFromPage, setSelectedTimeFromPage] = useState("");
+
   const handleScheduleVisit = () => {
     setScheduleDialogOpen(true);
   };
 
+  // pending message api
   const { data: pendingMessage = "" } = useQuery({
     queryKey: ["pending-message"],
     queryFn: async () => {
@@ -43,7 +55,8 @@ export default function DashboardPage() {
     },
   });
 
-  const { data: allVisits = [] } = useQuery({
+  //all visits api
+  const { data: allVisits = [], refetch } = useQuery({
     queryKey: ["[all-visits"],
     queryFn: async () => {
       const res = await fetch(
@@ -64,7 +77,28 @@ export default function DashboardPage() {
     },
   });
 
-  console.log(allVisits);
+  //notification api
+  const { data: notifications = [] } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/notifications/user`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch pending messages");
+      }
+
+      const data = await res.json();
+
+      return data.data;
+    },
+  });
 
   interface Visit {
     _id: string;
@@ -123,10 +157,23 @@ export default function DashboardPage() {
     return null;
   };
 
+  const timeSlots = [
+    "9:00 AM",
+    "9:30 AM",
+    "10:00 AM",
+    "10:30 AM",
+    "11:00 AM",
+    "11:30 AM",
+    "12:00 PM",
+    "12:30 PM",
+    "1:00 PM",
+    "1:30 PM",
+  ];
+
   return (
     <DashboardLayout title="">
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg font-medium">
@@ -159,26 +206,6 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-medium">
-                Latest Video Upload
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div>March 22, 2025 - 14:30</div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 gap-1 bg-[#091057] text-white"
-                onClick={() => toast.info("Video viewer would open here")}
-              >
-                <Eye className="h-4 w-4" />
-                View
-              </Button>
-            </CardContent>
-          </Card>
         </div>
 
         <Card>
@@ -191,26 +218,80 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-5 mt-2">
                 <h3 className="text-2xl font-medium">Available Time Slots:</h3>
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-2">
-                    <select className="px-3 py-2 rounded-md border w-[221px] bg-inherit">
-                      <option>Day</option>
-                    </select>
-                    <select className="px-3 py-2 rounded-md border w-[221px] bg-inherit">
-                      <option>Month</option>
-                    </select>
+                <div>
+                  <div className="flex items-center gap-5">
+                    <div className="w-[221px]">
+                      <Label htmlFor="day" className="text-xs">
+                        Day
+                      </Label>
+                      <Select onValueChange={setSelectedDateFromPage}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select day" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 7 }).map((_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() + i);
+                            const dateValue = date.toISOString().split("T")[0];
+                            return (
+                              <SelectItem key={i} value={dateValue}>
+                                {date.toLocaleDateString("en-US", {
+                                  weekday: "short",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className=" w-[221px]">
+                      <Label htmlFor="month" className="text-xs">
+                        Month
+                      </Label>
+                      <Select onValueChange={setSelectedMonthFromPage}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select month" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 12 }).map((_, i) => {
+                            const date = new Date();
+                            date.setMonth(i);
+                            return (
+                              <SelectItem
+                                key={i}
+                                value={date.toLocaleString("en-US", {
+                                  month: "long",
+                                })}
+                              >
+                                {date.toLocaleString("en-US", {
+                                  month: "long",
+                                })}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 mb-4">
-                {Array.from({ length: 10 }).map((_, i) => (
+                {timeSlots.map((time, i) => (
                   <Button
                     key={i}
-                    className="text-xs py-1 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[] hover:bg-[#091057] hover:text-white"
-                    onClick={handleScheduleVisit}
+                    type="button"
+                    size="sm"
+                    className={
+                      selectedTimeFromPage === time
+                        ? "bg-[#091057] text-white rounded-3xl py-5 px-2"
+                        : "text-xs py-5 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[] hover:bg-[#091057] hover:text-white"
+                    }
+                    onClick={() => setSelectedTimeFromPage(time)}
                   >
-                    Mar 30, {9 + Math.floor(i / 2)}:{i % 2 === 0 ? "00" : "30"}{" "}
-                    {i < 6 ? "AM" : "PM"}
+                    {time}
                   </Button>
                 ))}
               </div>
@@ -265,21 +346,16 @@ export default function DashboardPage() {
                 {Array.from({ length: daysInMonth }).map((_, i) => {
                   const day = i + 1;
                   const visitStatus = getVisitStatusForDay(day);
-                  const isToday =
-                    day === currentDate.getDate() &&
-                    currentMonth === currentDate.getMonth() &&
-                    currentYear === currentDate.getFullYear();
 
                   return (
                     <div
                       key={day}
                       className={`
                         h-10 flex items-center justify-center rounded-md text-sm cursor-pointer border border-border
-                        ${isToday ? "bg-primary/20 font-bold" : ""}
                         ${visitStatus === "completed" ? "bg-green-300" : ""}
                         ${visitStatus === "confirmed" ? "bg-blue-300" : ""}
                         ${visitStatus === "cancelled" ? "bg-red-300" : ""}
-                        ${visitStatus === "pending" ? "bg-blue-300" : ""}
+                        ${visitStatus === "pending" ? "bg-yellow-300" : ""}
                       `}
                       onClick={() => {
                         toast.info(
@@ -299,7 +375,7 @@ export default function DashboardPage() {
               <div className="flex flex-wrap gap-4 mt-4 text-xs">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span>Successful Visit</span>
+                  <span>Completed Visit</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -328,85 +404,30 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">
-                      Visit scheduled for{" "}
-                      {pendingVisits[0]?.date
-                        ? format(new Date(pendingVisits[0]?.date), "MMMM dd")
-                        : "N/A"}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">2h Ago</p>
+                {
+                notifications.map((notification) => (
+                  <div 
+                  key={notification?._id}
+                  className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-sm font-medium">
+                        {notification?.message}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(notification?.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">
-                      New message from Security Team
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 15, 11:30 AM
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">
-                      New message from Security Team
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 15, 11:30 AM
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">Visit log updated</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 12, 11:30 AM
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">
-                      New message from Security Team
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 10, 11:30 AM
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">Visit log updated</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 10, 11:30 AM
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-medium">Visit log updated</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Mar 10, 11:30 AM
-                    </p>
-                  </div>
-                </div>
+                ))
+                }
               </div>
 
-              <div className="flex justify-between items-center mt-4">
+              {/* <div className="flex justify-between items-center mt-4">
                 <Link href="#" className="text-xs text-muted-foreground">
                   See all notifications
                 </Link>
                 <span className="text-xs">?</span>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>
@@ -415,6 +436,10 @@ export default function DashboardPage() {
       <ScheduleVisitDialog
         open={scheduleDialogOpen}
         onOpenChange={setScheduleDialogOpen}
+        selectedDateFromPage={selectedDateFromPage}
+        selectedMonthFromPage={selectedMonthFromPage}
+        selectedTimeFromPage={selectedTimeFromPage}
+        refetch={refetch}
       />
     </DashboardLayout>
   );
