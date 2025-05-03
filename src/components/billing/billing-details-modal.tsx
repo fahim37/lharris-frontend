@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 interface PaymentDetailsModalProps {
     isOpen: boolean
     onClose: () => void
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     payment: any
 }
 

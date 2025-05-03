@@ -299,6 +299,8 @@ export default function VisitLogsPage() {
             </div>
             <div className="mt-3">
               <PaginationComponent
+                totalItems={allLogs?.pagination?.totalItems || 0}
+                itemsPerPage={allLogs?.pagination?.itemsPerPage || 10}
                 currentPage={getAllLogsPagination().currentPage}
                 totalPages={getAllLogsPagination().totalPages}
                 onPageChange={handlePageChange}
@@ -401,6 +403,8 @@ export default function VisitLogsPage() {
             </div>
             <div className="mt-3">
               <PaginationComponent
+                totalItems={completedVisits?.pagination?.totalItems || 0}
+                itemsPerPage={completedVisits?.pagination?.itemsPerPage || 10} 
                 currentPage={getCompletedVisitsPagination().currentPage}
                 totalPages={getCompletedVisitsPagination().totalPages}
                 onPageChange={handlePageChange}
@@ -503,6 +507,8 @@ export default function VisitLogsPage() {
             </div>
             <div className="mt-3">
               <PaginationComponent
+                totalItems={issueFounded?.pagination?.totalItems || 0}
+                itemsPerPage={issueFounded?.pagination?.itemsPerPage || 10}
                 currentPage={getIssueFoundedPagination().currentPage}
                 totalPages={getIssueFoundedPagination().totalPages}
                 onPageChange={handlePageChange}
