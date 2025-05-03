@@ -23,6 +23,7 @@ export default function MediaPage() {
   // const [searchQuery, setSearchQuery] = useState("");
 
   const [page, setPage] = useState(1);
+  const limit = 10;
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
@@ -38,7 +39,7 @@ export default function MediaPage() {
     queryKey: ["getallmedia", page], // Include page in the query key
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-all-visit`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-visit-client?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +55,6 @@ export default function MediaPage() {
       return data;
     },
   });
-  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -89,9 +89,8 @@ export default function MediaPage() {
           const blobUrl = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = blobUrl;
-          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${
-            mediaItem.type === "photo" ? "jpg" : "mp4"
-          }`;
+          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${mediaItem.type === "photo" ? "jpg" : "mp4"
+            }`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -109,6 +108,8 @@ export default function MediaPage() {
     }
   };
 
+  console.log(data)
+
   return (
     <DashboardLayout
       title="Client Name"
@@ -119,8 +120,8 @@ export default function MediaPage() {
       <div className="space-y-4">
         <div className="">
           {data?.data?.length === 0 ? (
-            <div className="col-span-full text-center py-10">
-              No media found
+            <div className="col-span-full text-center py-10 border rounded-md">
+              No visit found
             </div>
           ) : (
             <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-10 overflow-x-auto">
@@ -143,7 +144,7 @@ export default function MediaPage() {
                   {data?.data?.map((item) => (
                     <TableRow key={item.id} className="text-center">
                       <TableCell className="font-medium pl-10 ">
-                        {item.visitCode}
+                        {item?.visitId}
                       </TableCell>
                       <TableCell>
                         {new Date(item.date).toLocaleDateString("en-US", {
@@ -177,8 +178,8 @@ export default function MediaPage() {
                             item.status === "completed"
                               ? "default"
                               : item.status === "cancelled"
-                              ? "destructive"
-                              : "outline"
+                                ? "destructive"
+                                : "outline"
                           }
                           className={
                             item?.issues?.length === 0
@@ -218,26 +219,13 @@ export default function MediaPage() {
                   ))}
                 </TableBody>
               </Table>
-              <div className="flex justify-between items-center pl-9 py-5">
-                <p className="w-1/2">
-                  Showing{" "}
-                  {(data?.pagination?.currentPage - 1) *
-                    (data?.pagination?.itemsPerPage || 5) +
-                    1}{" "}
-                  to{" "}
-                  {Math.min(
-                    data?.pagination?.currentPage *
-                      (data?.pagination?.itemsPerPage || 5),
-                    data?.pagination?.totalItems
-                  )}{" "}
-                  of {data?.pagination?.totalItems} results
-                </p>
-                <PaginationComponent
-                  currentPage={data?.pagination?.currentPage || 1}
-                  totalPages={data?.pagination?.totalPages || 1}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              <PaginationComponent
+                totalItems={data?.meta?.totalItems} 
+                itemsPerPage={data?.meta?.itemsPerPage}
+                currentPage={data?.meta?.currentPage}
+                totalPages={data?.meta?.totalPages}
+                onPageChange={handlePageChange}
+              />
             </div>
           )}
         </div>

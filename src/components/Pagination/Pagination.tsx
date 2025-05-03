@@ -15,6 +15,8 @@ import { buttonVariants } from "@/components/ui/button";
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
     onPageChange: (page: number) => void;
 }
 
@@ -52,6 +54,8 @@ const PaginationLink = ({
 const PaginationComponent: React.FC<PaginationProps> = ({
     currentPage,
     totalPages,
+    totalItems,
+    itemsPerPage,
     onPageChange,
 }) => {
     const handleClick = (
@@ -63,6 +67,10 @@ const PaginationComponent: React.FC<PaginationProps> = ({
             onPageChange(page);
         }
     };
+
+    // Calculate showing range
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
     const getPages = () => {
         const pages: (number | string)[] = [];
@@ -114,7 +122,12 @@ const PaginationComponent: React.FC<PaginationProps> = ({
     };
 
     return (
-        <Pagination>
+        <Pagination className="flex items-center justify-between px-5 pt-10 pb-2">
+            <div className="">
+                <p className="text-sm text-gray-600">
+                    Showing {startItem} to {endItem} of {totalItems} entries
+                </p>
+            </div>
             <PaginationContent>
                 <PaginationItem>
                     <PaginationPrevious
