@@ -40,8 +40,8 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className={`text-sm hover:text-yellow-400 transition-colors ${
-                isActive(href) ? "text-yellow-400" : "text-white"
+              className={`text-sm hover:text-primary transition-colors ${
+                isActive(href) ? "text-primary" : "text-white"
               }`}
             >
               {label}
@@ -80,8 +80,8 @@ export default function Navbar() {
                     key={href}
                     href={href}
                     onClick={() => setOpen(false)}
-                    className={`text-sm hover:text-yellow-400 transition-colors ${
-                      isActive(href) ? "text-yellow-400" : "text-white"
+                    className={`text-sm hover:text-primary transition-colors ${
+                      isActive(href) ? "text-primary" : "text-white"
                     }`}
                   >
                     {label}
@@ -94,9 +94,11 @@ export default function Navbar() {
 
         {/* Login Button */}
         <div className="hidden md:block">
-          <Button className="bg-yellow-400 hover:bg-yellow-500 text-black text-sm">
-            Login
-          </Button>
+          <Link href="/login">
+            <Button className="bg-primary hover:bg-yellow-500 text-black text-sm">
+              Login
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
