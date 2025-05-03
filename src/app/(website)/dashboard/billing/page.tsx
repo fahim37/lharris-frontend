@@ -104,11 +104,11 @@ const subscriptionPlans = [
 ];
 
 export default function BillingPage() {
-  const [searchQuery] = useState("");
+  // const [searchQuery] = useState("");
 
   // const [setActiveTab] = useState("payment-history");
-  const [activeTab, setActiveTab] = useState("payment-history");
-  console.log(activeTab);
+  // const [activeTab, setActiveTab] = useState("payment-history");
+  // console.log(activeTab);
 
   const session = useSession();
     const userInfo = session?.data?.user;

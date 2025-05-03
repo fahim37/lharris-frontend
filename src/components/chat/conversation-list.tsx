@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Conversation } from "@/types/chat";
+import type { Conversation } from "../../../types/chat";
 import { useSession } from "next-auth/react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";

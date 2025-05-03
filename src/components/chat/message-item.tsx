@@ -1,4 +1,4 @@
-import type { Message } from "@/types/chat"
+import type { Message } from "../../../types/chat"
 import { useSession } from "next-auth/react"
 import { formatDistanceToNow } from "date-fns"
 
