@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 export default function MediaPage() {
 
   const [page, setPage] = useState(1);
+  const limit = 10;
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
@@ -38,7 +39,7 @@ export default function MediaPage() {
     queryKey: ["getallmedia", page], // Include page in the query key
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-all-visit`,
+        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-visit-client?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -119,8 +120,8 @@ export default function MediaPage() {
       <div className="space-y-4">
         <div className="">
           {data?.data?.length === 0 ? (
-            <div className="col-span-full text-center py-10">
-              No media found
+            <div className="col-span-full text-center py-10 border rounded-md">
+              No visit found
             </div>
           ) : (
             <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-10 overflow-x-auto">
