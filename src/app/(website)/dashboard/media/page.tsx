@@ -108,7 +108,7 @@ export default function MediaPage() {
             </div>
           ) : (
 
-            <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-10 overflow-x-auto">
+            <div className="shadow-[0px_10px_60px_0px_#0000001A] py-4 rounded-lg mt-36 overflow-x-auto">
               <Table className="min-w-[800px]">
                 <TableHeader>
                   <TableRow>
