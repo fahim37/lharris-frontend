@@ -65,14 +65,6 @@ export function MediaViewerDialog({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>{media.issue}</DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 rounded-full"
-              onClick={() => onOpenChange(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </DialogHeader>
         <div className="space-y-5">
@@ -149,14 +141,14 @@ export function MediaViewerDialog({
             <div className="grid grid-cols-2 gap-4 mt-2">
               <div>
                 <p className="text-xs text-muted-foreground">Status</p>
-                <p className="text-sm">
-                  {media.status.charAt(0).toUpperCase() + media.status.slice(1)}
+                <p className="text-sm capitalize">
+                  {media.status}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Type</p>
-                <p className="text-sm">
-                  {media.type.charAt(0).toUpperCase() + media.type.slice(1)}
+                <p className="text-sm capitalize">
+                  {media.type}
                 </p>
               </div>
             </div>
