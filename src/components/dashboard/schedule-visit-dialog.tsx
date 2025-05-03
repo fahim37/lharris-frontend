@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect } from "react"; // Import useEffect
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 
@@ -23,10 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSession } from "next-auth/react";
 
 interface ScheduleVisitDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  selectedDateFromPage?: string;
+  selectedMonthFromPage?: string; 
+  selectedTimeFromPage?: string;
+  refetch?: () => void;
 }
 
 interface VisitPayload {
@@ -37,39 +41,32 @@ interface VisitPayload {
   addsOnService: string;
 }
 
-const createVisit = async (data: VisitPayload) => {
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4ODg2OCwiZXhwIjoxNzQ1OTkzNjY4fQ.jpYRAndRR3RW2FkXYJ-TGkVe_UAQS7RwUPreGbFW6Hg";
-
-  const response = await fetch(
-    "http://localhost:5100/api/v1/visits/client/create-visit",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to schedule visit");
-  }
-
-  return response.json();
-};
-
 export function ScheduleVisitDialog({
   open,
   onOpenChange,
+  selectedDateFromPage,
+  selectedMonthFromPage,
+  selectedTimeFromPage,
+  refetch
 }: ScheduleVisitDialogProps) {
   const [visitType, setVisitType] = useState("routine-check");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
-  console.log(selectedMonth);
-  
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDate, setSelectedDate] = useState(selectedDateFromPage || ""); 
+  const [selectedMonth, setSelectedMonth] = useState(selectedMonthFromPage || "");
+  const [selectedTime, setSelectedTime] = useState(selectedTimeFromPage || "");
   const [address, setAddress] = useState("");
+
+ 
+  useEffect(() => {
+    setSelectedDate(selectedDateFromPage || "");
+  }, [selectedDateFromPage]);
+
+  useEffect(() => {
+    setSelectedMonth(selectedMonthFromPage || "");
+  }, [selectedMonthFromPage]);
+
+    useEffect(() => {
+    setSelectedTime(selectedTimeFromPage || "");
+  }, [selectedTimeFromPage]);
 
   const timeSlots = [
     "9:00 AM",
@@ -84,11 +81,35 @@ export function ScheduleVisitDialog({
     "1:30 PM",
   ];
 
+  const session = useSession();
+  const token = session?.data?.accessToken;
+
+  const createVisit = async (data: VisitPayload) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/visits/create-visit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to schedule visit");
+    }
+
+    return response.json();
+  };
+
   // TanStack Query mutation
   const mutation = useMutation({
     mutationFn: createVisit,
     onSuccess: () => {
       toast.success("Visit scheduled successfully!");
+      refetch?.();
       onOpenChange(false);
       // Reset form
       setAddress("");
@@ -115,23 +136,22 @@ export function ScheduleVisitDialog({
     // Combine date and time into ISO format
     const [year, month, day] = selectedDate.split("-").map(Number); // Assuming date format is YYYY-MM-DD
     const [time, period] = selectedTime.split(" ");
-    let [hours, ] = time.split(":").map(Number);
+    let [hours] = time.split(":").map(Number);
 
     if (period === "PM" && hours !== 12) hours += 12;
     if (period === "AM" && hours === 12) hours = 0;
 
-    const visitDate = new Date(year, month - 1, day, hours, );
+    const visitDate = new Date(year, month - 1, day, hours);
     const isoDate = visitDate.toISOString();
 
     const payload: VisitPayload = {
       address,
       date: isoDate,
-      type: visitType.replace("-", " "), // Convert "routine-check" to "routine check"
-      plan: "68033c17c6e62e6bad133d91", // Hardcoded as per your example
-      addsOnService: "680355ac9071138c9b14d1e0", // Hardcoded as per your example
+      type: visitType.replace("-", " "),
+      plan: "68033c17c6e62e6bad133d91",
+      addsOnService: "680355ac9071138c9b14d1e0",
     };
 
-    // Trigger the mutation
     mutation.mutate(payload);
   };
 
@@ -139,34 +159,12 @@ export function ScheduleVisitDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <div className="flex items-center justify-between">
+          <div>
             <DialogTitle>Schedule Visit</DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 rounded-full"
-              onClick={() => onOpenChange(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="type">Type</Label>
-              <Select value={visitType} onValueChange={setVisitType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select visit type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="routine-check">Routine Check</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="emergency">Emergency</SelectItem>
-                  <SelectItem value="installation">Installation</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             <div className="grid gap-2">
               <Label htmlFor="address">Address</Label>
               <Input
@@ -177,13 +175,12 @@ export function ScheduleVisitDialog({
               />
             </div>
             <div className="grid gap-2">
-              <Label>Available Time Slots</Label>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <Label htmlFor="day" className="text-xs">
                     Day
                   </Label>
-                  <Select onValueChange={setSelectedDate}>
+                  <Select value={selectedDate} onValueChange={setSelectedDate}> {/* Use value prop */}
                     <SelectTrigger>
                       <SelectValue placeholder="Select day" />
                     </SelectTrigger>
@@ -205,11 +202,12 @@ export function ScheduleVisitDialog({
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div>
                   <Label htmlFor="month" className="text-xs">
                     Month
                   </Label>
-                  <Select onValueChange={setSelectedMonth}>
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth}> {/* Use value prop */}
                     <SelectTrigger>
                       <SelectValue placeholder="Select month" />
                     </SelectTrigger>
@@ -233,17 +231,19 @@ export function ScheduleVisitDialog({
                 </div>
               </div>
             </div>
+
+            <h1>Available Time Slots</h1>
+
             <div className="grid grid-cols-5 gap-2">
               {timeSlots.map((time, i) => (
                 <Button
                   key={i}
                   type="button"
-                  variant={selectedTime === time ? "default" : "outline"}
                   size="sm"
                   className={
                     selectedTime === time
-                      ? "bg-primary text-primary-foreground"
-                      : ""
+                      ? "bg-[#091057] text-white rounded-3xl"
+                      : "text-xs py-1 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[] hover:bg-[#091057] hover:text-white"
                   }
                   onClick={() => setSelectedTime(time)}
                 >
@@ -255,7 +255,7 @@ export function ScheduleVisitDialog({
           <DialogFooter>
             <Button
               type="submit"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-[#091057] hover:bg-[#091057] text-white"
               disabled={mutation.isPending}
             >
               {mutation.isPending ? "Scheduling..." : "Schedule Visit"}
