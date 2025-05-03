@@ -105,9 +105,9 @@ export function Sidebar({ className }: SidebarProps) {
             >
               <div
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-md transition-all hover:text-primary",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-md transition-all",
                   route.active
-                    ? "bg-secondary-foreground/10 text-primary"
+                    ? "bg-primary"
                     : "text-white"
                 )}
               >
