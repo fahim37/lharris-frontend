@@ -21,6 +21,8 @@ export default function BillingPage() {
   const [page, setPage] = useState(1)
   const limit = 1;
   const [currentPage, setCurrentPage] = useState(1)
+  console.log(currentPage, "currentPage")
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedPayment, setSelectedPayment] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -45,12 +47,12 @@ export default function BillingPage() {
     },
     enabled: !!userInfo?.id && !!TOKEN,
   })
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewPaymentDetails = (payment: any) => {
     setSelectedPayment(payment)
     setIsModalOpen(true)
   }
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleDownloadPaymentDetails = (payment: any) => {
     try {
       const doc = generatePaymentPDF(payment)
@@ -98,6 +100,7 @@ export default function BillingPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
+                    {/* eslint-disable @typescript-eslint/no-explicit-any */}
                     {data?.data?.map((item: any) => (
                       <TableRow key={item.id} className="text-center">
                         <TableCell className="font-medium pl-10 ">{item.transactionId}</TableCell>

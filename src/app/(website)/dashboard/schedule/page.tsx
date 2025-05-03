@@ -238,6 +238,8 @@ export default function SchedulePage() {
             )}
             <div className="mt-3 ">
               <PaginationComponent
+                totalItems={data?.pagination.totalItems}
+                itemsPerPage={data?.pagination.itemsPerPage}
                 currentPage={data?.pagination.currentPage}
                 totalPages={data?.pagination.totalPages}
                 onPageChange={(newPage) => setPage(newPage)}

@@ -20,6 +20,7 @@ import PaginationComponent from "@/components/Pagination/Pagination";
 import { toast } from "react-toastify";
 
 export default function MediaPage() {
+  // const [searchQuery, setSearchQuery] = useState("");
 
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -27,7 +28,6 @@ export default function MediaPage() {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-
 
   const session = useSession();
   const userInfo = session?.data?.user;
@@ -141,7 +141,7 @@ export default function MediaPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.data?.map((item, i) => (
+                  {data?.data?.map((item) => (
                     <TableRow key={item.id} className="text-center">
                       <TableCell className="font-medium pl-10 ">
                         {item?.visitId}
