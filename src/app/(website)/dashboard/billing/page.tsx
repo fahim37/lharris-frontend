@@ -18,6 +18,7 @@ import { Download, Check, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "@/components/Pagination/Pagination";
+import { useSession } from "next-auth/react";
 
 // Dummy data for payment history
 const paymentHistory = [
@@ -102,11 +103,15 @@ const subscriptionPlans = [
   },
 ];
 
-
-
 export default function BillingPage() {
+  const [searchQuery] = useState("");
+
+  // const [setActiveTab] = useState("payment-history");
   const [activeTab, setActiveTab] = useState("payment-history");
   console.log(activeTab);
+
+  const session = useSession();
+    const userInfo = session?.data?.user;
   
   // const [searchQuery, setSearchQuery] = useState("");
 
@@ -119,7 +124,6 @@ export default function BillingPage() {
     // );
   });
   console.log(filteredPayments);
-  
 
   const filteredInvoices = invoices.filter(() => {
     // const searchLower = searchQuery.toLowerCase();
@@ -130,16 +134,14 @@ export default function BillingPage() {
     // );
   });
 
-  const [page, setPage] = useState(1)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   console.log(currentPage);
-  
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    setPage(page) 
-  }
-
+    setCurrentPage(page);
+    setPage(page);
+  };
 
   const { data } = useQuery({
     queryKey: ["pymentDetails", page],
@@ -148,29 +150,30 @@ export default function BillingPage() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/payments/paymentDetails/67f0b5e939baaffa730ffc11`,
         {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDg4NTA4Yzk2ZDQ2ZDYyNTU3ZmQ4NCIsImlhdCI6MTc0NTM4OTQ0NSwiZXhwIjoxNzQ1OTk0MjQ1fQ.toHCcZ7DoT7WVLSvhYz_8_DUE1igGMup_CCpUjGbhsw",
           },
         }
-      )
+      );
       if (!response.ok) {
-        throw new Error("Failed to fetch live auctions")
+        throw new Error("Failed to fetch live auctions");
       }
-      const data = await response.json()
-      return data
+      const data = await response.json();
+      return data;
     },
-  })
+  });
   console.log(data);
-  
 
   return (
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName="Name"
-      userRole="Customer"
+      userName= {userInfo?.name}
+      userRole={userInfo?.role}
     >
+      {/* onValueChange={setActiveTab} */}
       <div className="space-y-6">
-        <Tabs defaultValue="payment-history" onValueChange={setActiveTab}>
+        <Tabs defaultValue="payment-history">
           <TabsList className="w-full max-w-md grid grid-cols-3">
             <TabsTrigger value="payment-history" className="rounded-full">
               Payment History
@@ -204,9 +207,18 @@ export default function BillingPage() {
                         {/* {payment.id} */}
                         {"225"}
                       </TableCell>
-                      <TableCell> {new Date(payment.createdAt).toISOString().split("T")[0]}</TableCell>
+                      <TableCell>
+                        {" "}
+                        {
+                          new Date(payment.createdAt)
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      </TableCell>
 
-                      <TableCell>{new Date(payment.createdAt).toLocaleTimeString()}</TableCell>
+                      <TableCell>
+                        {new Date(payment.createdAt).toLocaleTimeString()}
+                      </TableCell>
                       <TableCell>{payment.amount}</TableCell>
                       {/* <TableCell>{payment.type}</TableCell> */}
                       <TableCell>
@@ -295,10 +307,11 @@ export default function BillingPage() {
                       ))}
                     </ul>
                     <Button
-                      className={`w-full mt-6 ${plan.current
+                      className={`w-full mt-6 ${
+                        plan.current
                           ? "bg-secondary text-secondary-foreground"
                           : "bg-primary text-primary-foreground"
-                        }`}
+                      }`}
                       onClick={() =>
                         toast.info(
                           plan.current
