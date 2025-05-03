@@ -20,7 +20,6 @@ import PaginationComponent from "@/components/Pagination/Pagination";
 import { toast } from "react-toastify";
 
 export default function MediaPage() {
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [page, setPage] = useState(1);
 
@@ -28,7 +27,7 @@ export default function MediaPage() {
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
- 
+
   const session = useSession();
   const userInfo = session?.data?.user;
 
@@ -55,7 +54,6 @@ export default function MediaPage() {
       return data;
     },
   });
-  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -90,9 +88,8 @@ export default function MediaPage() {
           const blobUrl = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = blobUrl;
-          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${
-            mediaItem.type === "photo" ? "jpg" : "mp4"
-          }`;
+          link.download = `${item.issue}-${mediaItem.type}-${Date.now()}.${mediaItem.type === "photo" ? "jpg" : "mp4"
+            }`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -110,11 +107,13 @@ export default function MediaPage() {
     }
   };
 
+  console.log(data)
+
   return (
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName= {userInfo?.name}
+      userName={userInfo?.name}
       userRole={userInfo?.role}
     >
       <div className="space-y-4">
@@ -144,7 +143,7 @@ export default function MediaPage() {
                   {data?.data?.map((item, i) => (
                     <TableRow key={item.id} className="text-center">
                       <TableCell className="font-medium pl-10 ">
-                        {item.visitCode}
+                        {item?.visitId}
                       </TableCell>
                       <TableCell>
                         {new Date(item.date).toLocaleDateString("en-US", {
@@ -178,8 +177,8 @@ export default function MediaPage() {
                             item.status === "completed"
                               ? "default"
                               : item.status === "cancelled"
-                              ? "destructive"
-                              : "outline"
+                                ? "destructive"
+                                : "outline"
                           }
                           className={
                             item?.issues?.length === 0
@@ -206,7 +205,7 @@ export default function MediaPage() {
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
-                          disabled={item.issues?.length === 0}
+                            disabled={item.issues?.length === 0}
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDownloadSingleMedia(item)}
@@ -219,26 +218,13 @@ export default function MediaPage() {
                   ))}
                 </TableBody>
               </Table>
-              <div className="flex justify-between items-center pl-9 py-5">
-                <p className="w-1/2">
-                  Showing{" "}
-                  {(data?.pagination?.currentPage - 1) *
-                    (data?.pagination?.itemsPerPage || 5) +
-                    1}{" "}
-                  to{" "}
-                  {Math.min(
-                    data?.pagination?.currentPage *
-                      (data?.pagination?.itemsPerPage || 5),
-                    data?.pagination?.totalItems
-                  )}{" "}
-                  of {data?.pagination?.totalItems} results
-                </p>
-                <PaginationComponent
-                  currentPage={data?.pagination?.currentPage || 1}
-                  totalPages={data?.pagination?.totalPages || 1}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              <PaginationComponent
+                totalItems={data?.meta?.totalItems} 
+                itemsPerPage={data?.meta?.itemsPerPage}
+                currentPage={data?.meta?.currentPage}
+                totalPages={data?.meta?.totalPages}
+                onPageChange={handlePageChange}
+              />
             </div>
           )}
         </div>
