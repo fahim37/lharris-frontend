@@ -20,7 +20,7 @@ import PaginationComponent from "@/components/Pagination/Pagination";
 import { toast } from "react-toastify";
 
 export default function MediaPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
 
   const [page, setPage] = useState(1);
 
@@ -28,7 +28,6 @@ export default function MediaPage() {
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
- 
   const session = useSession();
   const userInfo = session?.data?.user;
 
@@ -114,7 +113,7 @@ export default function MediaPage() {
     <DashboardLayout
       title="Client Name"
       subtitle="Client Dashboard"
-      userName= {userInfo?.name}
+      userName={userInfo?.name}
       userRole={userInfo?.role}
     >
       <div className="space-y-4">
@@ -206,7 +205,7 @@ export default function MediaPage() {
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
-                          disabled={item.issues?.length === 0}
+                            disabled={item.issues?.length === 0}
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDownloadSingleMedia(item)}
