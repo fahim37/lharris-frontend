@@ -1,7 +1,5 @@
 "use client";
 import { useState } from "react";
-// import Link from "next/link";
-import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +19,7 @@ import {
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const session = useSession();
+  const userInfo = session?.data?.user
   const userID = session?.data?.user?.id;
   const token = session?.data?.accessToken;
 
@@ -171,7 +170,12 @@ export default function DashboardPage() {
   ];
 
   return (
-    <DashboardLayout title="">
+    <DashboardLayout
+      title="Client Name"
+      subtitle="Client Dashboard"
+      userName={userInfo?.name}
+      userRole={userInfo?.role}
+    >
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
@@ -357,14 +361,6 @@ export default function DashboardPage() {
                         ${visitStatus === "cancelled" ? "bg-red-300" : ""}
                         ${visitStatus === "pending" ? "bg-yellow-300" : ""}
                       `}
-                      onClick={() => {
-                        toast.info(
-                          `Selected date: ${format(
-                            new Date(currentYear, currentMonth, day),
-                            "MMMM dd, yyyy"
-                          )}`
-                        );
-                      }}
                     >
                       {day}
                     </div>
@@ -404,11 +400,11 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {
-                notifications.map((notification) => (
-                  <div 
-                  key={notification?._id}
-                  className="flex justify-between items-start">
+                {notifications.map((notification) => (
+                  <div
+                    key={notification?._id}
+                    className="flex justify-between items-start"
+                  >
                     <div>
                       <h4 className="text-sm font-medium">
                         {notification?.message}
@@ -418,8 +414,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                ))
-                }
+                ))}
               </div>
 
               {/* <div className="flex justify-between items-center mt-4">
