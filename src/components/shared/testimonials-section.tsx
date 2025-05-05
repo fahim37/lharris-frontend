@@ -162,9 +162,8 @@ export default function VideoCarousel() {
             {testimonials.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 w-2 rounded-full transition-all ${
-                  currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
-                }`}
+                className={`h-2 w-2 rounded-full transition-all ${currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
+                  }`}
               />
             ))}
           </div>

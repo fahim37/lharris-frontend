@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const generatePaymentPDF = (payment: any) => {
   const doc = new jsPDF()
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { X } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -115,7 +114,7 @@ export function MediaViewerDialog({
               {/* Visit Type Row */}
               <div className="flex justify-between items-center">
                 <span className="font-medium">Visit Type:</span>
-                <span className="capitalize">{media.type}</span>
+                <span className="capitalize">{media?.type || "N/A"}</span>
               </div>
 
               {/* Issue Row with Button */}
@@ -148,7 +147,7 @@ export function MediaViewerDialog({
               <div>
                 <p className="text-xs text-muted-foreground">Type</p>
                 <p className="text-sm capitalize">
-                  {media.type}
+                  {media?.type || "N/A"}
                 </p>
               </div>
             </div>

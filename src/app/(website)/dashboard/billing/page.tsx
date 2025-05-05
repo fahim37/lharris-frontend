@@ -19,8 +19,9 @@ export default function BillingPage() {
   const TOKEN = session?.data?.accessToken
 
   const [page, setPage] = useState(1)
-  const limit = 1;
+  const limit = 10;
   const [currentPage, setCurrentPage] = useState(1)
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [selectedPayment, setSelectedPayment] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -46,11 +47,13 @@ export default function BillingPage() {
     enabled: !!userInfo?.id && !!TOKEN,
   })
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const handleViewPaymentDetails = (payment: any) => {
     setSelectedPayment(payment)
     setIsModalOpen(true)
   }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleDownloadPaymentDetails = (payment: any) => {
     try {
       const doc = generatePaymentPDF(payment)
@@ -67,6 +70,8 @@ export default function BillingPage() {
       toast.error("Failed to download payment receipt")
     }
   }
+
+  console.log(data)
 
   return (
     <DashboardLayout
@@ -92,12 +97,14 @@ export default function BillingPage() {
                       <TableHead className="text-center">Date</TableHead>
                       <TableHead className="text-center">Visit Time</TableHead>
                       <TableHead className="text-center">Amount</TableHead>
+                      <TableHead className="text-center">Plan Name</TableHead>
                       <TableHead className="text-center">Type</TableHead>
                       <TableHead className="text-center">Status</TableHead>
                       <TableHead className="text-center">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
+                    {/* eslint-disable @typescript-eslint/no-explicit-any */}
                     {data?.data?.map((item: any) => (
                       <TableRow key={item.id} className="text-center">
                         <TableCell className="font-medium pl-10 ">{item.transactionId}</TableCell>
@@ -116,7 +123,8 @@ export default function BillingPage() {
                           })}
                         </TableCell>
                         <TableCell>{item.formattedAmount}</TableCell>
-                        <TableCell className="capitalize">{item?.status}</TableCell>
+                        <TableCell className="capitalize">{item.plan?.name}</TableCell>
+                        <TableCell className="capitalize">{item?.plan?.pack}</TableCell>
                         <TableCell className="max-w-[200px]">
                           <span
                             className={cn("px-2 py-1 rounded-full text-xs font-medium", {
@@ -146,10 +154,10 @@ export default function BillingPage() {
                   </TableBody>
                 </Table>
                 <PaginationComponent
-                  totalItems={data?.meta?.totalItems}
-                  itemsPerPage={data?.meta?.itemsPerPage}
-                  currentPage={data?.meta?.currentPage}
-                  totalPages={data?.meta?.totalPages}
+                  totalItems={data?.pagination?.totalItems}
+                  itemsPerPage={data?.pagination?.itemsPerPage}
+                  currentPage={data?.pagination?.currentPage || currentPage}
+                  totalPages={data?.pagination?.totalPages}
                   onPageChange={handlePageChange}
                 />
               </div>

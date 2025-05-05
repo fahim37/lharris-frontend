@@ -108,7 +108,6 @@ export default function MediaPage() {
     }
   };
 
-  console.log(data)
 
   return (
     <DashboardLayout
@@ -141,7 +140,7 @@ export default function MediaPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.data?.map((item, i) => (
+                  {data?.data?.map((item) => (
                     <TableRow key={item.id} className="text-center">
                       <TableCell className="font-medium pl-10 ">
                         {item?.visitId}
@@ -161,16 +160,20 @@ export default function MediaPage() {
                         })}
                       </TableCell>
                       <TableCell>
-                        <div className="flex justify-center gap-2">
-                          <div>
-                            <div className="font-medium">
-                              {item?.staff?.fullname}
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {item?.staff?.email}
+                        {item.staff ?
+                          <div className="flex justify-center gap-2">
+                            <div>
+                              <div className="font-medium">
+                                {item?.staff?.fullname}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {item?.staff?.email}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                          :
+                          "No staff assigned"
+                        }
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -192,9 +195,9 @@ export default function MediaPage() {
                             : "Issue found"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="capitalize">{item?.type}</TableCell>
+                      <TableCell className="capitalize">{item?.type || "N/A"}</TableCell>
                       <TableCell className="max-w-[200px] truncate">
-                        {item.notes}
+                        {item.notes || "No notes"}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-center gap-2">
@@ -220,7 +223,7 @@ export default function MediaPage() {
                 </TableBody>
               </Table>
               <PaginationComponent
-                totalItems={data?.meta?.totalItems} 
+                totalItems={data?.meta?.totalItems}
                 itemsPerPage={data?.meta?.itemsPerPage}
                 currentPage={data?.meta?.currentPage}
                 totalPages={data?.meta?.totalPages}

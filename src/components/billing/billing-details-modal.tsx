@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 interface PaymentDetailsModalProps {
     isOpen: boolean
     onClose: () => void
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     payment: any
 }
 
@@ -16,9 +17,9 @@ export function PaymentDetailsModal({ isOpen, onClose, payment }: PaymentDetails
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Payment Details</DialogTitle>
+                    <DialogTitle className="pb-3">Payment Details</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4 py-2">
+                <div className="space-y-8 py-2">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-muted-foreground">Transaction ID</p>
@@ -61,9 +62,15 @@ export function PaymentDetailsModal({ isOpen, onClose, payment }: PaymentDetails
                         </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground">Customer</p>
-                        <p className="text-sm font-medium">{payment.user?.fullname}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium text-muted-foreground">Customer</p>
+                            <p className="text-sm font-medium">{payment.user?.fullname}</p>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium text-muted-foreground">Plan Name</p>
+                            <p className="text-sm font-medium">{payment.plan?.name}</p>
+                        </div>
                     </div>
                 </div>
             </DialogContent>
