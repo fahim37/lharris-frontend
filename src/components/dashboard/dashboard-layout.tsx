@@ -23,9 +23,9 @@ export function DashboardLayout({
         <header className="sticky top-0 z-10 bg-background border-b">
           <div className="flex h-16 items-center justify-between px-4 md:px-6">
             <div>
-              <h1 className="text-lg font-semibold">{title}</h1>
+              <h1 className="text-lg font-semibold hidden lg:block">{title}</h1>
               {subtitle && (
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
+                <p className="text-sm text-muted-foreground hidden lg:block">{subtitle}</p>
               )}
             </div>
             {userName && (

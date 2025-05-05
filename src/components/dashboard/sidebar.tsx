@@ -69,8 +69,8 @@ export function Sidebar({ className }: SidebarProps) {
     {
       label: "Messages",
       icon: MessageSquare,
-      href: "/dashboard/messages",
-      active: pathname === "/dashboard/messages",
+      href: "/dashboard/chat",
+      active: pathname === "/dashboard/chat",
     },
     {
       label: "Billing",
@@ -121,8 +121,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="p-3 mt-auto">
         <Button
           onClick={() => signOut({ callbackUrl: "/" })}
-          variant="outline"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-md transition-all hover:text-primary text-white border-none"
+          className="bg-primary text-[#091057]"
         >
           <LogOut className="h-5 w-5" />
           <span>Logout</span>

@@ -52,7 +52,6 @@ export default function BillingPage() {
     setSelectedPayment(payment)
     setIsModalOpen(true)
   }
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
   const handleDownloadPaymentDetails = (payment: any) => {
     try {
