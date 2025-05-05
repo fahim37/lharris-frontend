@@ -31,6 +31,13 @@ const handler = NextAuth({
 
           const user = result.data.user;
 
+          // Block admin users from logging in
+          if (user.role === "admin") {
+            throw new Error(
+              "Admins are not allowed to log in through this portal."
+            );
+          }
+
           return {
             id: user._id.toString(), // Convert to string if needed
             name: user.fullname,
@@ -63,6 +70,7 @@ const handler = NextAuth({
           isVerified: user.isVerified,
           status: user.status,
         };
+        token.role = user.role;
         token.accessToken = user.token;
       }
       return token;
