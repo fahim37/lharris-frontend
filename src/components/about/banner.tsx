@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function AboutBanner() {
   return (
@@ -20,15 +21,16 @@ export default function AboutBanner() {
             24/7 Expertise You Can Trust
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[50px]">
+            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[50px] bg-[#F7E39F] text-[#091057] font-bold hover:bg-[#F7E39F]/80">
               Meet the Team
             </Button>
-            <Button
-              variant={"outline"}
-              className="text-primary text-[14px] sm:text-[16px] w-full sm:w-auto mt-2 sm:mt-0 h-[50px]"
-            >
-              Emergency Contact
-            </Button>
+            <Link href="/contact">
+              <Button
+                className="text-[14px] sm:text-[16px] text-[#F7E39F] w-full sm:w-auto mt-2 sm:mt-0 h-[50px] bg-transparent border-2 border-[#F7E39F]"
+              >
+                Emergency Contact
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

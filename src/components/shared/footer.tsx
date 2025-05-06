@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Twitter, Instagram, Linkedin, ArrowRight, Facebook } from "lucide-react";
+import { Twitter, Instagram, Linkedin, Facebook } from "lucide-react";
 import { Send } from "lucide-react";
 
 export default function Footer() {
