@@ -173,7 +173,7 @@ export default function VideoCarousel() {
       <div className="flex justify-center mt-8">
         <Button
      
-          className="px-[16px] h-[32px] text-primary rounded-[8px] bg-transparent border border-[#F7E39F] text-[16px] font-bold"
+          className="px-[16px] h-[60px] text-primary rounded-[8px] bg-transparent border border-[#F7E39F] text-[16px] font-bold"
         >
           See all reviews by our customers
           <ArrowRight className="h-5 w-5" />
