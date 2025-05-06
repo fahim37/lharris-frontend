@@ -4,6 +4,8 @@ import ScheduleVisitSection from "@/components/landing/schedule-visit-section";
 import TestimonialsSection from "@/components/shared/testimonials-section";
 import PricingSection from "@/components/shared/pricing-section";
 
+import "@/app/globals.css"
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">

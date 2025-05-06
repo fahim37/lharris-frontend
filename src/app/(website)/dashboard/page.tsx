@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import "@/app/globals.css";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
