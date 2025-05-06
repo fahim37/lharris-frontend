@@ -29,11 +29,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // ❌ If user is a "client", block access to /dashboard
-  if (pathname.startsWith("/dashboard")) {
-    if (!token || token.role === "client") {
-      return NextResponse.redirect(new URL("/", request.url)); // Or a custom /403 page
-    }
-  }
+  // if (pathname.startsWith("/dashboard")) {
+  //   if (!token || token.role === "client") {
+  //     return NextResponse.redirect(new URL("/", request.url)); // Or a custom /403 page
+  //   }
+  // }
 
   return NextResponse.next();
 }
