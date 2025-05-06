@@ -71,7 +71,7 @@ export default function ContactSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
         {/* Contact Form */}
 
-        <div>
+        <div className="p-4 bg-[#FFFFFF]/10 rounded-xl">
           <div className="text-[28px] md:text-[40px] text-white font-[700] mb-5">Get in Touch</div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
@@ -195,7 +195,7 @@ export default function ContactSection() {
                 )}
               />
 
-              <Button type="submit" className="w-full h-[51px]">
+              <Button type="submit" className="text-[#091057] w-full h-[51px]">
                 Send Message
               </Button>
             </form>
