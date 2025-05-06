@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
@@ -13,46 +13,47 @@ import PaginationComponent from "@/components/Pagination/Pagination"
 import { useSession } from "next-auth/react"
 
 interface Visit {
-  _id: string;
-  visitCode: string;
-  createdAt: string;
-  updatedAt: string;
+  _id: string
+  visitId: string
+  visitCode: string
+  createdAt: string
+  updatedAt: string
   staff: {
-    fullname: string;
-    email: string;
-  } | null;
-  status: string;
-  type: string;
-  notes: string;
+    fullname: string
+    email: string
+  } | null
+  status: string
+  type: string
+  notes: string
   issues?: Array<{
-    place: string;
-    issue: string;
-    type: string;
-  }> | null;
+    place: string
+    issue: string
+    type: string
+  }> | null
 }
 
 interface IssuesCount {
-  totalIssues: number;
-  resolvedIssues: number;
-  pendingIssues: number;
+  totalIssues: number
+  resolvedIssues: number
+  pendingIssues: number
 }
 
 export default function VisitLogsPage() {
-  const [selectedVisit, setSelectedVisit] = useState<string | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const session = useSession();
-  const token = session.data?.accessToken;
-  const userInfo = session?.data?.user;
+  const [selectedVisit, setSelectedVisit] = useState<string | null>(null)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const session = useSession()
+  const token = session.data?.accessToken
+  const userInfo = session?.data?.user
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    setCurrentPage(page)
+  }
 
   const handleViewDetails = (visit: Visit) => {
-    setSelectedVisit(visit._id);
-    setIsDetailsOpen(true);
-  };
+    setSelectedVisit(visit._id)
+    setIsDetailsOpen(true)
+  }
 
   // Fetch all visits
   const { data: allLogs, isLoading: allLogsLoading } = useQuery({
@@ -64,15 +65,15 @@ export default function VisitLogsPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
+        },
+      )
       if (!response.ok) {
-        throw new Error("Failed to fetch visits");
+        throw new Error("Failed to fetch visits")
       }
-      return await response.json();
+      return await response.json()
     },
     enabled: !!token,
-  });
+  })
 
   // Fetch completed visits
   const { data: completedVisits, isLoading: completedVisitsLoading } = useQuery({
@@ -84,15 +85,15 @@ export default function VisitLogsPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
+        },
+      )
       if (!response.ok) {
-        throw new Error("Failed to fetch completed visits");
+        throw new Error("Failed to fetch completed visits")
       }
-      return await response.json();
+      return await response.json()
     },
     enabled: !!token,
-  });
+  })
 
   // Fetch visits with issues
   const { data: issueFounded, isLoading: issuesLoading } = useQuery({
@@ -104,68 +105,73 @@ export default function VisitLogsPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
+        },
+      )
       if (!response.ok) {
-        throw new Error("Failed to fetch visits with issues");
+        throw new Error("Failed to fetch visits with issues")
       }
-      return await response.json();
+      return await response.json()
     },
     enabled: !!token,
-  });
+  })
 
   // Fetch issues count
   const { data: issuesCount, isLoading: issuesCountLoading } = useQuery<{ data: IssuesCount }>({
     queryKey: ["issuesCount"],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/visits/get-all-issues-count`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visits/get-all-issues-count`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       if (!response.ok) {
-        throw new Error("Failed to fetch issues count");
+        throw new Error("Failed to fetch issues count")
       }
-      return await response.json();
+      return await response.json()
     },
     enabled: !!token,
-  });
+  })
 
   // Safely get pagination data with defaults
   const getAllLogsPagination = () => ({
     currentPage: allLogs?.pagination?.currentPage || 1,
     totalPages: allLogs?.pagination?.totalPages || 1,
-  });
+  })
 
   const getCompletedVisitsPagination = () => ({
     currentPage: completedVisits?.pagination?.currentPage || 1,
     totalPages: completedVisits?.pagination?.totalPages || 1,
-  });
+  })
 
   const getIssueFoundedPagination = () => ({
     currentPage: issueFounded?.pagination?.currentPage || 1,
     totalPages: issueFounded?.pagination?.totalPages || 1,
-  });
+  })
 
-  const isLoading = allLogsLoading || completedVisitsLoading || issuesLoading || issuesCountLoading;
+  const isLoading = allLogsLoading || completedVisitsLoading || issuesLoading || issuesCountLoading
 
   if (isLoading) {
     return (
-      <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName={userInfo?.name}
-        userRole={userInfo?.role}>
+      <DashboardLayout
+        title="Client Name"
+        subtitle="Client Dashboard"
+        userName={userInfo?.name}
+        userRole={userInfo?.role}
+      >
         <div className="flex justify-center items-center h-64">
           <p>Loading visit logs...</p>
         </div>
       </DashboardLayout>
-    );
+    )
   }
 
   return (
-    <DashboardLayout title="Client Name" subtitle="Client Dashboard" userName={userInfo?.name}
-      userRole={userInfo?.role}>
+    <DashboardLayout
+      title="Client Name"
+      subtitle="Client Dashboard"
+      userName={userInfo?.name}
+      userRole={userInfo?.role}
+    >
       <div className="space-y-4">
         {/* Issues Count Summary */}
         {issuesCount?.data && (
@@ -191,7 +197,7 @@ export default function VisitLogsPage() {
               <TabsTrigger value="all-logs">All Logs</TabsTrigger>
               <TabsTrigger value="completed-visits">Completed Visits</TabsTrigger>
               <TabsTrigger value="issue-reported">
-                Issue Founded {issuesCount?.data?.totalIssues ? `(${issuesCount.data.totalIssues})` : ''}
+                Issue Founded {issuesCount?.data?.totalIssues ? `(${issuesCount.data.totalIssues})` : ""}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -221,14 +227,8 @@ export default function VisitLogsPage() {
                   ) : (
                     allLogs?.data?.map((visit: Visit) => (
                       <TableRow key={visit._id}>
-                        <TableCell className="font-medium">{visit.visitCode}</TableCell>
-                        <TableCell>
-                          {
-                            new Date(visit.createdAt)
-                              .toISOString()
-                              .split("T")[0]
-                          }
-                        </TableCell>
+                        <TableCell className="font-medium">{visit.visitId}</TableCell>
+                        <TableCell>{new Date(visit.createdAt).toISOString().split("T")[0]}</TableCell>
                         <TableCell>
                           {new Date(visit.updatedAt).toLocaleTimeString([], {
                             hour: "2-digit",
@@ -238,12 +238,8 @@ export default function VisitLogsPage() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <div>
-                              <div className="font-medium">
-                                {visit.staff?.fullname || "N/A"}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {visit.staff?.email || "N/A"}
-                              </div>
+                              <div className="font-medium">{visit.staff?.fullname || "N/A"}</div>
+                              <div className="text-xs text-muted-foreground">{visit.staff?.email || "N/A"}</div>
                             </div>
                           </div>
                         </TableCell>
@@ -253,37 +249,31 @@ export default function VisitLogsPage() {
                               visit.status === "completed"
                                 ? "default"
                                 : visit.status === "cancelled"
-                                ? "destructive"
-                                : visit.status === "confirmed"
-                                ? "secondary"
-                                : "outline"
+                                  ? "destructive"
+                                  : visit.status === "confirmed"
+                                    ? "secondary"
+                                    : "outline"
                             }
                             className={
                               visit.status === "completed"
-                                ? "bg-green-500 text-white"
+                                ? "bg-[#B3E9C9] text-black"
                                 : visit.status === "cancelled"
-                                ? "bg-red-500 text-white"
-                                : visit.status === "pending"
-                                ? "bg-yellow-500 text-yellow-950"
-                                : visit.status === "confirmed"
-                                ? "bg-blue-500 text-white"
-                                : ""
+                                  ? "bg-[#E9BFBF] text-black"
+                                  : visit.status === "pending"
+                                    ? "bg-[#F7E39F] text-black"
+                                    : visit.status === "confirmed"
+                                      ? "bg-[#B3E9C9] text-black"
+                                      : ""
                             }
                           >
                             {visit.status.toUpperCase()}
                           </Badge>
                         </TableCell>
                         <TableCell>{visit.type}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">
-                          {visit.notes}
-                        </TableCell>
+                        <TableCell className="max-w-[200px] truncate">{visit.notes}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleViewDetails(visit)}
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon">
@@ -335,11 +325,13 @@ export default function VisitLogsPage() {
                     completedVisits?.data?.map((visit: Visit) => (
                       <TableRow key={visit._id}>
                         <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                        <TableCell>{new Date(visit.createdAt).toISOString().split("T")[0]}</TableCell>
                         <TableCell>
-                          {new Date(visit.createdAt).toISOString().split("T")[0]}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                          {new Date(visit.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          })}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -362,8 +354,12 @@ export default function VisitLogsPage() {
                               visit.status === "completed"
                                 ? "bg-[#B3E9C9] text-black"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500"
-                                  : "bg-yellow-500 text-yellow-950"
+                                  ? "bg-[#E9BFBF] text-black"
+                                  : visit.status === "pending"
+                                    ? "bg-[#F7E39F] text-black"
+                                    : visit.status === "confirmed"
+                                      ? "bg-[#B3E9C9] text-black"
+                                      : ""
                             }
                           >
                             {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
@@ -371,9 +367,7 @@ export default function VisitLogsPage() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={
-                              !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
-                            }
+                            variant={!visit.issues || visit.issues.length === 0 ? "default" : "destructive"}
                             className={
                               !visit.issues || visit.issues.length === 0
                                 ? "bg-[#B3E9C9] text-black"
@@ -404,7 +398,7 @@ export default function VisitLogsPage() {
             <div className="mt-3">
               <PaginationComponent
                 totalItems={completedVisits?.pagination?.totalItems || 0}
-                itemsPerPage={completedVisits?.pagination?.itemsPerPage || 10} 
+                itemsPerPage={completedVisits?.pagination?.itemsPerPage || 10}
                 currentPage={getCompletedVisitsPagination().currentPage}
                 totalPages={getCompletedVisitsPagination().totalPages}
                 onPageChange={handlePageChange}
@@ -439,11 +433,13 @@ export default function VisitLogsPage() {
                     issueFounded?.data?.map((visit: Visit) => (
                       <TableRow key={visit._id}>
                         <TableCell className="font-medium">{visit.visitCode}</TableCell>
+                        <TableCell>{new Date(visit.createdAt).toISOString().split("T")[0]}</TableCell>
                         <TableCell>
-                          {new Date(visit.createdAt).toISOString().split("T")[0]}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(visit.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                          {new Date(visit.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          })}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -466,8 +462,12 @@ export default function VisitLogsPage() {
                               visit.status === "completed"
                                 ? "bg-[#B3E9C9] text-black"
                                 : visit.status === "cancelled"
-                                  ? "bg-red-500"
-                                  : "bg-yellow-500 text-yellow-950"
+                                  ? "bg-[#E9BFBF] text-black"
+                                  : visit.status === "pending"
+                                    ? "bg-[#F7E39F] text-black"
+                                    : visit.status === "confirmed"
+                                      ? "bg-[#B3E9C9] text-black"
+                                      : ""
                             }
                           >
                             {visit.status.charAt(0).toUpperCase() + visit.status.slice(1)}
@@ -475,13 +475,11 @@ export default function VisitLogsPage() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={
-                              !visit.issues || visit.issues.length === 0 ? "default" : "destructive"
-                            }
+                            variant={!visit.issues || visit.issues.length === 0 ? "default" : "destructive"}
                             className={
                               !visit.issues || visit.issues.length === 0
-                                ? "bg-green-500"
-                                : "bg-[#E9BFBF] text-[red]"
+                                ? "bg-[#B3E9C9] text-black"
+                                : "bg-[#E9BFBF] text-black"
                             }
                           >
                             {!visit.issues || visit.issues.length === 0 ? "No issue" : "Issue found"}
@@ -519,12 +517,8 @@ export default function VisitLogsPage() {
       </div>
 
       {selectedVisit && (
-        <VisitDetailsDialog
-          visitId={selectedVisit}
-          open={isDetailsOpen}
-          onOpenChange={setIsDetailsOpen}
-        />
+        <VisitDetailsDialog visitId={selectedVisit} open={isDetailsOpen} onOpenChange={setIsDetailsOpen} />
       )}
     </DashboardLayout>
-  );
+  )
 }
