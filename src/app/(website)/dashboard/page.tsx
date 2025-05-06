@@ -172,7 +172,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout
-      title="Client Name"
+      title=""
       subtitle="Client Dashboard"
       userName={userInfo?.name}
       userRole={userInfo?.role}
@@ -303,8 +303,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
-          <Card className=" lg:col-span-4">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 ">
+          <Card className=" lg:col-span-4 max-h-[500px] overflow-y-auto">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">Calendar</CardTitle>
               <div className="text-xs text-muted-foreground">
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                     <div
                       key={day}
                       className={`
-                        h-20 flex items-center justify-center rounded-md text-sm cursor-pointer border border-border
+                        h-14 flex items-center justify-center rounded-md text-sm cursor-pointer border border-border
                         ${visitStatus === "completed" ? "bg-[#ecfdf5]" : ""}
                         ${visitStatus === "confirmed" ? "bg-[#e6e7ee]" : ""}
                         ${visitStatus === "cancelled" ? "bg-[#fef2f2]" : ""}
@@ -381,7 +381,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className=" lg:col-span-2">
+          <Card className=" lg:col-span-2 max-h-[500px] overflow-y-auto">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">
                 Notifications
@@ -397,11 +397,11 @@ export default function DashboardPage() {
                     key={notification?._id}
                     className="flex justify-between items-start mt-5 text-[14px] "
                   >
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex  justify-between w-full text-[12px]">
                       <h4 className="text-sm">
                         {notification?.message}
                       </h4>
-                      <p className="text-muted-foreground">
+                      <p className="text-muted-foreground text-[12px] text-nowrap">
                         {new Date(notification?.createdAt).toLocaleString(
                           "en-US",
                           {

@@ -11,11 +11,12 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({
   children,
-  title,
-  subtitle,
+
   userName,
   userRole,
 }: DashboardLayoutProps) {
+  console.log(userName);
+  
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
@@ -23,10 +24,7 @@ export function DashboardLayout({
         <header className="sticky top-0 z-10 bg-background border-b">
           <div className="flex h-16 items-center justify-between px-4 md:px-6">
             <div>
-              <h1 className="text-lg font-semibold hidden lg:block">{title}</h1>
-              {subtitle && (
-                <p className="text-sm text-muted-foreground hidden lg:block">{subtitle}</p>
-              )}
+             
             </div>
             {userName && (
               <div className="flex items-center gap-4">
@@ -38,8 +36,8 @@ export function DashboardLayout({
                     </span>
                   )}
                 </div>
-                <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground">
-                  {userName.charAt(0)}
+                <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-white">
+                  {userName.charAt(0).toUpperCase()}
                 </div>
               </div>
             )}
