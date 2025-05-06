@@ -1,12 +1,13 @@
-import { Zap, Video, Users } from "lucide-react";
+import {  Video, Users, BellRing } from "lucide-react";
 
 export default function FeaturesSection() {
   return (
     <section className="container pb-12">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-[#FFFFFF1A] p-6 rounded-[20px]">
-          <div className="mb-4">
-            <Zap className="h-8 w-8 text-white" />
+          <div className="mb-4 ">
+            {/* <Zap className="h-8 w-8 text-white" /> */}
+            <BellRing className="h-8 w-8 text-white"/>
           </div>
           <h3 className="text-white font-medium mb-2">Real-Time Alerts</h3>
           <p className="text-gray-300 text-sm">
