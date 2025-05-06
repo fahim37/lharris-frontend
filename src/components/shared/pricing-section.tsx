@@ -138,7 +138,7 @@ export default function PricingSection() {
                         / {plan.pack}
                       </span>
                     </div>
-                    <ul className="space-y-3 pb-10">
+                    <ul className="space-y-3 pb-10 h-[200px] ">
                       {extractFeatures(plan.description).map(
                         (feature, index) => (
                           <li key={index} className="flex items-center gap-3">
@@ -173,9 +173,8 @@ export default function PricingSection() {
               {plans?.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-2 w-2 rounded-full transition-all ${
-                    currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
-                  }`}
+                  className={`h-2 w-2 rounded-full transition-all ${currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
+                    }`}
                 />
               ))}
             </div>
