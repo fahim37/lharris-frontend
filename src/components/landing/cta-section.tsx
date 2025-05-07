@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function CTASection() {
   return (
@@ -8,12 +9,14 @@ export default function CTASection() {
           Need Immediate Assistance?
         </h2>
         <p className="text-primary mb-6 text-[20px]">Call Our 24/7 Hotline</p>
+        <Link href="/dashboard">   
         <Button
           variant="outline"
-          className="border-primary text-primary hover:bg-blue-900/30 mb-4"
+          className="border-primary text-primary bg-transparent mb-4"
         >
           Request Emergency Visit
         </Button>
+        </Link>
       </div>
     </section>
   );

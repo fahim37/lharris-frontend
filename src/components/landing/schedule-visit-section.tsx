@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ScheduleVisitSection() {
   return (
@@ -45,11 +46,13 @@ export default function ScheduleVisitSection() {
                 </span>
               </li>
             </ul>
-            <Button className="px-6 py-3 md:px-[32px] md:py-[16px] h-[48px] md:h-[52px] w-full md:w-[220px]">
-              {" "}
-              {/* Made button responsive */}
-              Try Interactive Demo
-            </Button>
+            <Link href="/dashboard/schedule">
+              <Button className="px-6 py-3 md:px-[32px] md:py-[16px] h-[48px] md:h-[52px] w-full md:w-[220px] bg-[#F7E39F] text-base text-[#091057] hover:bg-[#F7E39F]/80 font-medium">
+
+                {/* Made button responsive */}
+                Add a Visit
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

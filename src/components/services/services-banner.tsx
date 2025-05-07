@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Lock, PlayCircle, Shield, TrendingUp } from "lucide-react";
+import { Lock,  Shield, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 export default function ServicesBanner() {
   return (
@@ -22,28 +23,26 @@ export default function ServicesBanner() {
             Response, and Smart Tech
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-start gap-4 sm:gap-8">
-            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[52px]">
+            <Link href="/dashboard">
+              
+            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[52px] bg-[#F7E39F] text-[#091057]">
               Get Started
             </Button>
-            <Button
-              variant="outline"
-              className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[52px] text-primary"
-            >
-              <PlayCircle className="mr-2 !h-6 !w-6" />
-              Watch Demo
-            </Button>
+            </Link>
+          
           </div>
         </div>
         <div className="w-full py-3 bg-[#FFFFFF1A] bg-opacity-50 text-white flex items-center justify-around text-xs sm:text-sm my-10 rounded-[8px]">
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <Lock className="h-4 w-4 mr-1" />
+            
             GDPR Compliant
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <Shield className="h-4 w-4 mr-1" />
             AES-256 Encryption
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 mr-1" />
             98% Client Retention
           </div>

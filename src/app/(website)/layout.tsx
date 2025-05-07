@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { ReactNode } from "react";
-import "@/app/globals.css";
+import "@/app/globals.css"
 import { Inter } from "next/font/google";
 import LayoutWrapper from "@/components/shared/layout-wrapper";
 import AuthProvider from "@/components/session-provide";
