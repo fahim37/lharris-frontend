@@ -1,9 +1,22 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Twitter, Instagram, Linkedin, Facebook } from "lucide-react";
-import { Send } from "lucide-react";
+import { Twitter, Instagram, Linkedin, Facebook, Send } from "lucide-react";
+import { useState } from "react";
+
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+ 
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email) {
+      
+      setEmail("");
+  
+    }
+  };
+
   return (
     <footer className="border-t border-blue-900/30 pt-12 pb-6">
       <div className="container">
@@ -97,19 +110,23 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="text-white font-medium mb-4">Stay Updated</h3>
-            <div className="flex">
+            <form onSubmit={handleSubmit} className="flex relative">
               <input
                 type="email"
                 placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-[#1F2937] text-white px-3 py-2 rounded-l-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-400"
               />
-              <Button className=" rounded-l-none">
+              <Button type="submit" className="rounded-l-none">
                 <Send className="h-4 w-4 text-[#091057]" />
               </Button>
-            </div>
+        
+             
+            </form>
             <div className="flex gap-4 mt-4">
               <Link href="#" className="text-gray-300 hover:text-primary">
-              <Facebook  className="h-5 w-5 text-[#F7E39F]" />
+                <Facebook className="h-5 w-5 text-[#F7E39F]" />
               </Link>
               <Link href="#" className="text-gray-300 hover:text-primary">
                 <Twitter className="h-5 w-5 text-[#F7E39F]" />
@@ -123,7 +140,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className=" pt-6 text-center">
+        <div className="pt-6 text-center">
           <p className="text-gray-400 text-xs">
             © 2023 - SecureHome Solutions. All rights reserved.
           </p>
