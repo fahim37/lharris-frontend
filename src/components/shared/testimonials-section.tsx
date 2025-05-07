@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, ArrowRight } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
