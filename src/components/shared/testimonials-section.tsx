@@ -162,8 +162,9 @@ export default function VideoCarousel() {
             {testimonials.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 w-2 rounded-full transition-all ${currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
-                  }`}
+                className={`h-2 w-2 rounded-full transition-all ${
+                  currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
+                }`}
               />
             ))}
           </div>
@@ -171,13 +172,13 @@ export default function VideoCarousel() {
         </div>
       </Carousel>
       <div className="flex justify-center mt-8">
-        <Button
+        {/* <Button
      
           className="px-[16px] h-[60px] text-primary rounded-[8px] bg-transparent border border-[#F7E39F] text-[16px] font-bold"
         >
           See all reviews by our customers
           <ArrowRight className="h-5 w-5" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

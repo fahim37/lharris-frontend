@@ -60,9 +60,7 @@ export function LoginForm() {
       console.log("login data df", response);
       if (response?.error) {
         toast.error(response?.error);
-        alert(response?.error);
       } else {
-        alert("Login Successfully");
         toast.success("Login successful");
         router.push("/dashboard");
         router.refresh();

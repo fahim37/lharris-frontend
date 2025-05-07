@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import "@/app/globals.css";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
@@ -186,7 +185,9 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold text-[#091057]">{pendingVisits.length}</div>
+              <div className="text-4xl font-bold text-[#091057]">
+                {pendingVisits.length}
+              </div>
             </CardContent>
           </Card>
 
@@ -213,7 +214,9 @@ export default function DashboardPage() {
           <CardContent>
             <div>
               <div className="flex items-center justify-between mb-5 mt-2">
-                <h3 className="text-2xl font-medium text-[#091057]">Available Time Slots:</h3>
+                <h3 className="text-2xl font-medium text-[#091057]">
+                  Available Time Slots:
+                </h3>
                 <div>
                   <div className="flex items-center gap-5">
                     <div className="w-[221px]">
@@ -398,9 +401,7 @@ export default function DashboardPage() {
                     className="flex justify-between items-start mt-5 text-[14px] "
                   >
                     <div className="flex  justify-between w-full text-[12px]">
-                      <h4 className="text-sm">
-                        {notification?.message}
-                      </h4>
+                      <h4 className="text-sm">{notification?.message}</h4>
                       <p className="text-muted-foreground text-[12px] text-nowrap">
                         {new Date(notification?.createdAt).toLocaleString(
                           "en-US",
