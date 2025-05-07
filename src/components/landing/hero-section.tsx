@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+
 import StatsSection from "./stats-section";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -19,17 +20,15 @@ export default function HeroSection() {
             <div className="flex flex-wrap gap-4 justify-start">
               {" "}
               {/* Added justify-start */}
-              <Button className="text-secondary font-medium px-6">
+              <Link href="/dashboard">
+                
+              <Button className="text-secondary px-6 bg-[#F7E39F] text-[#091057] text-base font-bold hover:bg-[#F7E39F]/80  py-[12px] rounded-lg">
                 {" "}
                 {/* Adjusted padding */}
                 Get Started
               </Button>
-              <Button
-                variant="outline"
-                className="border-primary text-primary hover:bg-blue-900/30 font-medium px-6"
-              >
-                <Play className="mr-2 h-4 w-4" /> Watch Demo
-              </Button>
+              </Link>
+           
             </div>
           </div>
           <div className="mt-8 md:mt-0">

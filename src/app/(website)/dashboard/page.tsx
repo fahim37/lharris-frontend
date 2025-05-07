@@ -15,11 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import "@/app/globals.css";
 
 export default function DashboardPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const session = useSession();
-  const userInfo = session?.data?.user
+  const userInfo = session?.data?.user;
   const userID = session?.data?.user?.id;
   const token = session?.data?.accessToken;
 
@@ -171,7 +172,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout
-      title="Client Name"
+      title=""
       subtitle="Client Dashboard"
       userName={userInfo?.name}
       userRole={userInfo?.role}
@@ -185,28 +186,19 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold">{pendingVisits.length}</div>
-              <div className="text-sm text-muted-foreground">
-                Next:{" "}
-                {pendingVisits[0]?.date
-                  ? format(new Date(pendingVisits[0]?.date), "MMMM dd, h:mm a")
-                  : "No upcoming visits"}
-              </div>
+              <div className="text-4xl font-bold text-[#091057]">{pendingVisits.length}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-medium">
+              <CardTitle className="text-lg font-medium text-[#091057]">
                 Pending Messages
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold">
+              <div className="text-4xl text-[#091057] font-bold">
                 {pendingMessage?.data || 0}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Last: 2 hours ago
               </div>
             </CardContent>
           </Card>
@@ -221,7 +213,7 @@ export default function DashboardPage() {
           <CardContent>
             <div>
               <div className="flex items-center justify-between mb-5 mt-2">
-                <h3 className="text-2xl font-medium">Available Time Slots:</h3>
+                <h3 className="text-2xl font-medium text-[#091057]">Available Time Slots:</h3>
                 <div>
                   <div className="flex items-center gap-5">
                     <div className="w-[221px]">
@@ -291,7 +283,7 @@ export default function DashboardPage() {
                     className={
                       selectedTimeFromPage === time
                         ? "bg-[#091057] text-white rounded-3xl py-5 px-2"
-                        : "text-xs py-5 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[] hover:bg-[#091057] hover:text-white"
+                        : "text-xs py-5 px-2 rounded-3xl border-none bg-[#e6e7ee] text-[#091057] hover:bg-[#091057] hover:text-white"
                     }
                     onClick={() => setSelectedTimeFromPage(time)}
                   >
@@ -301,7 +293,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-end">
                 <Button
-                  className="bg-[#091057] hover:bg-[#091057] text-white"
+                  className="bg-[#091057] hover:bg-[#091057] text-primary"
                   onClick={handleScheduleVisit}
                 >
                   Schedule Visit
@@ -311,8 +303,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 ">
+          <Card className=" lg:col-span-4 max-h-[500px] overflow-y-auto">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">Calendar</CardTitle>
               <div className="text-xs text-muted-foreground">
@@ -355,11 +347,11 @@ export default function DashboardPage() {
                     <div
                       key={day}
                       className={`
-                        h-10 flex items-center justify-center rounded-md text-sm cursor-pointer border border-border
-                        ${visitStatus === "completed" ? "bg-green-300" : ""}
-                        ${visitStatus === "confirmed" ? "bg-blue-300" : ""}
-                        ${visitStatus === "cancelled" ? "bg-red-300" : ""}
-                        ${visitStatus === "pending" ? "bg-yellow-300" : ""}
+                        h-14 flex items-center justify-center rounded-md text-sm cursor-pointer border border-border
+                        ${visitStatus === "completed" ? "bg-[#ecfdf5]" : ""}
+                        ${visitStatus === "confirmed" ? "bg-[#e6e7ee]" : ""}
+                        ${visitStatus === "cancelled" ? "bg-[#fef2f2]" : ""}
+                        ${visitStatus === "pending" ? "bg-[#fffbeb]" : ""}
                       `}
                     >
                       {day}
@@ -389,7 +381,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className=" lg:col-span-2 max-h-[500px] overflow-y-auto">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">
                 Notifications
@@ -403,14 +395,24 @@ export default function DashboardPage() {
                 {notifications.map((notification) => (
                   <div
                     key={notification?._id}
-                    className="flex justify-between items-start"
+                    className="flex justify-between items-start mt-5 text-[14px] "
                   >
-                    <div>
-                      <h4 className="text-sm font-medium">
+                    <div className="flex  justify-between w-full text-[12px]">
+                      <h4 className="text-sm">
                         {notification?.message}
                       </h4>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(notification?.createdAt).toLocaleDateString()}
+                      <p className="text-muted-foreground text-[12px] text-nowrap">
+                        {new Date(notification?.createdAt).toLocaleString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )}
                       </p>
                     </div>
                   </div>

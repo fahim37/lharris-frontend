@@ -20,7 +20,7 @@ export default function ContactBanner() {
             Immediate Assistance? Call Now:
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[52px]">
+            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[52px] text-[#091057]">
               Call Now: #############
             </Button>
           </div>
