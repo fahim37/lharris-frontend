@@ -46,7 +46,7 @@ export default function AddOnsPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/auth/signin?callbackUrl=/pricing");
+      router.push("/login");
     }
   }, [status, router]);
 
