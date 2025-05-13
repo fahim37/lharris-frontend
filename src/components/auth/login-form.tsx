@@ -54,17 +54,15 @@ export function LoginForm() {
         email: data.email,
         password: data.password,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
 
       console.log("login data df", response);
       if (response?.error) {
         toast.error(response?.error);
-        alert(response?.error);
       } else {
-        alert("Login Successfully");
         toast.success("Login successful");
-        router.push("/dashboard");
+        router.push("/");
         router.refresh();
       }
     } catch (error) {
@@ -100,7 +98,7 @@ export function LoginForm() {
       </div>
 
       {/* Right section */}
-      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16">
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16 bg-white">
         <div className="w-full mx-auto space-y-6">
           <h2 className="text-4xl md:text-6xl font-[600] text-gray-900 text-center">
             Welcome User
@@ -175,7 +173,7 @@ export function LoginForm() {
                 />
 
                 <Link
-                  href="/auth/forgot-password"
+                  href="/forgot-password"
                   className="text-sm text-[#0a1155] hover:underline"
                 >
                   Forgot password?
