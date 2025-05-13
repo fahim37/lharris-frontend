@@ -9,9 +9,9 @@ export default function HeroSection() {
     <section className="container py-12">
       <div className="grid md:grid-cols-2 gap-8 items-center">
         {/* Left Column: Text and Buttons */}
-        <div className="flex flex-col justify-between h-full min-w-[320px] md:min-w-[540px]">
+        <div className="flex flex-col justify-between h-full min-w-[320px] lg:min-w-[540px]">
           <div className="space-y-6">
-            <h1 className="text-[28px] md:text-[40px] font-bold text-primary">
+            <h1 className="text-[28px] lg:text-[34px] xl:text-[40px] font-bold text-primary">
               24/7 Professional Security Monitoring
             </h1>
             <p className="text-primary">
@@ -21,14 +21,12 @@ export default function HeroSection() {
               {" "}
               {/* Added justify-start */}
               <Link href="/dashboard">
-                
-              <Button className="text-secondary px-6 bg-[#F7E39F] text-[#091057] text-base font-bold hover:bg-[#F7E39F]/80  py-[12px] rounded-lg">
-                {" "}
-                {/* Adjusted padding */}
-                Get Started
-              </Button>
+                <Button className="text-secondary px-6 bg-[#F7E39F] text-[#091057] text-base font-bold hover:bg-[#F7E39F]/80  py-[12px] rounded-lg">
+                  {" "}
+                  {/* Adjusted padding */}
+                  Get Started
+                </Button>
               </Link>
-           
             </div>
           </div>
           <div className="mt-8 md:mt-0">
@@ -37,7 +35,7 @@ export default function HeroSection() {
         </div>
 
         {/* Right Column: Image */}
-        <div className="flex justify-center items-center max-w-full md:max-w-[570px] mt-36 md:mt-0">
+        <div className="flex justify-center items-center max-w-full lg:max-w-[500px] mt-36 md:mt-0">
           {" "}
           {/* Added mt-8 for mobile spacing */}
           <Image

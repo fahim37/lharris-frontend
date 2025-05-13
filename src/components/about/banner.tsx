@@ -15,19 +15,14 @@ export default function AboutBanner() {
       <div className="container mx-auto px-4">
         <div className="text-center">
           <h1 className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] leading-[120%] font-bold text-primary pb-4 sm:pb-6 md:pb-8">
-            Protecting Families & Businesses Since ###
+            Your Safety, Our Mission
           </h1>
           <p className="text-[16px] sm:text-[18px] md:text-[20px] leading-[120%] font-bold text-primary pb-8 sm:pb-12 md:pb-16">
-            24/7 Expertise You Can Trust
+            Protecting Families & Businesses with 24/7 Expertise You Can Trust
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[50px] bg-[#F7E39F] text-[#091057] font-bold hover:bg-[#F7E39F]/80">
-              Meet the Team
-            </Button>
             <Link href="/contact">
-              <Button
-                className="text-[14px] sm:text-[16px] text-[#F7E39F] w-full sm:w-auto mt-2 sm:mt-0 h-[50px] bg-transparent border-2 border-[#F7E39F]"
-              >
+              <Button className="text-[14px] sm:text-[16px] w-full sm:w-auto h-[50px] bg-[#F7E39F] text-[#091057] font-bold hover:bg-[#F7E39F]/80">
                 Emergency Contact
               </Button>
             </Link>

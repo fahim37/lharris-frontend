@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -13,7 +13,6 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import DOMPurify from "isomorphic-dompurify";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface Plan {
@@ -26,23 +25,22 @@ interface Plan {
 
 export default function PricingSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [api, setApi] = useState<CarouselApi>();
-  const { data } = useSession();
-  const userId = data?.user?.id;
-  const [isMounted, setIsMounted] = useState(false); // Add mounted state
+  // const userId = session?.user?.id;
+  const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true); // Set mounted to true
+    setIsMounted(true);
   }, []);
 
-  const { data: plans } = useQuery({
+  const { data: plans, isLoading: plansLoading } = useQuery({
     queryKey: ["plans"],
     queryFn: async () => {
       const res = await fetch(
-        `https://lharris.onrender.com/api/v1/plans/get-all-plans`
+        `${process.env.NEXT_PUBLIC_API_URL}/plans/get-all-plans`
       );
       return res.json();
     },
@@ -50,8 +48,7 @@ export default function PricingSection() {
   });
 
   const [count, setCount] = useState(plans?.length || 0);
-
-  // Set up carousel API to track current slide
+  console.log(count);
   useEffect(() => {
     if (!isMounted || !api || !plans?.length) return;
 
@@ -63,16 +60,10 @@ export default function PricingSection() {
     });
   }, [api, plans, isMounted]);
 
-  // Function to safely parse HTML content from API
-  // const parseDescription = (htmlString: string) => {
-  //   const cleanHtml = DOMPurify.sanitize(htmlString)
-  //   return parse(cleanHtml)
-  // }
-
-  console.log(count, api);
-
   // Function to extract list items from HTML description
   const extractFeatures = (description: string) => {
+    if (!isMounted) return [];
+
     const cleanHtml = DOMPurify.sanitize(description);
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = cleanHtml;
@@ -81,24 +72,29 @@ export default function PricingSection() {
     return Array.from(listItems).map((item) => item.textContent);
   };
 
-  const handleCreatePaymentIntent = async (planId: string, price: number) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/payments/payment-intent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, planId, amount: price }),
-      }
-    );
+  const handleSelectPlan = (planId: string) => {
+    // if (status === "unauthenticated") {
+    //   // Redirect to sign in if not authenticated
+    //   router.push(`/auth/signin?callbackUrl=/plan-addons/${planId}`);
+    //   return;
+    // }
 
-    const responseData = await res.json();
-
-    console.log(responseData?.data?.url);
-
-    return router.push(responseData?.data?.url);
+    setIsLoading(planId);
+    router.push(`/plan-addons/${planId}`);
   };
+
+  if (plansLoading || !isMounted) {
+    return (
+      <section className="container py-16">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-gray-300">Loading plans...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="container py-16">
@@ -155,12 +151,18 @@ export default function PricingSection() {
                   </CardContent>
                   <CardFooter className="p-6 pt-0">
                     <Button
-                      onClick={() =>
-                        handleCreatePaymentIntent(plan._id, plan.price)
-                      }
+                      onClick={() => handleSelectPlan(plan._id)}
+                      disabled={isLoading === plan._id}
                       className="w-full bg-[#f8d87c] text-[#050a3a] hover:bg-[#f8d87c]/90"
                     >
-                      Choose Plan
+                      {isLoading === plan._id ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        "Choose Plan"
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -168,17 +170,18 @@ export default function PricingSection() {
             ))}
           </CarouselContent>
           <div className="flex items-center justify-center gap-2 mt-6">
-            <CarouselPrevious className="static transform-none bg-transparent border-none hover:bg-transparent text-amber-400 hover:text-amber-500" />
+            <CarouselPrevious className="static transform-none bg-transparent border-none hover:bg-transparent text-[#F7E39F] hover:text-[#F7E39F]/80" />
             <div className="flex gap-2">
               {plans?.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-2 w-2 rounded-full transition-all ${currentIndex === index ? "bg-amber-400 w-6" : "bg-gray-300"
-                    }`}
+                  className={`h-2 w-2 rounded-full transition-all ${
+                    currentIndex === index ? "bg-[#F7E39F] w-6" : "bg-gray-300"
+                  }`}
                 />
               ))}
             </div>
-            <CarouselNext className="static transform-none bg-transparent border-none hover:bg-transparent text-amber-400 hover:text-amber-500" />
+            <CarouselNext className="static transform-none bg-transparent border-none hover:bg-transparent text-[#F7E39F] hover:text-[#F7E39F]/80" />
           </div>
         </Carousel>
       </div>
