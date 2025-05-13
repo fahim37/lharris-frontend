@@ -10,7 +10,9 @@ const page = () => {
       <ServicesBanner />
       <SecurityServices />
       <Process />
-      <PricingSection />
+      <div id="pricing-section">
+        <PricingSection />
+      </div>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { VisitDetailsDialog } from "@/components/dashboard/visit-details-dialog"
 import { Badge } from "@/components/ui/badge"
-import { Eye, Download } from "lucide-react"
+import { Eye } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import PaginationComponent from "@/components/Pagination/Pagination"
 import { useSession } from "next-auth/react"
@@ -249,9 +249,9 @@ export default function VisitLogsPage() {
                       <Button variant="ghost" size="icon" onClick={() => handleViewDetails(visit)}>
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon">
+                      {/* <Button variant="ghost" size="icon">
                         <Download className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </TableCell>
                 </TableRow>

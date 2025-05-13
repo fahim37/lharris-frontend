@@ -112,7 +112,7 @@ export function RegisterForm() {
         <div className="border-[7px] border-[white] w-[592px] h-[455px] rounded-[400px] absolute lg:-bottom-[200px] xl:-bottom-[300px] -right-[320px]"></div>
       </div>
 
-      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16">
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 py-12 sm:px-16 bg-white">
         <div className="space-y-2">
           <h1 className="text-4xl font-[600] text-center mb-5">
             Create Your Account
