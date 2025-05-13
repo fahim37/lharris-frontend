@@ -132,30 +132,11 @@ export default function SchedulePage() {
                 </TabsTrigger>
               </TabsList>
 
-              <div className="flex items-center gap-3 bg-[#FFFFFF] py-5 px-7 shadow-xl rounded-xl">
-                <Button
-                  variant={viewMode === "calendar" ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setViewMode("calendar")}
-                  className={`rounded-full ${viewMode === "calendar" ? "!bg-[#091057] text-white" : ""}`}
-                  aria-label="Calendar view"
-                >
-                  <Calendar className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setViewMode("list")}
-                  className={`rounded-full ${viewMode === "list" ? "!bg-[#091057] text-white" : ""}`}
-                  aria-label="List view"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+             
             </div>
 
             <TabsContent value="upcoming-visits" className="mt-6">
-              {viewMode === "list" ? (
+              
                 <>
                   <div className="rounded-md border overflow-hidden">
                     <Table>
@@ -267,75 +248,11 @@ export default function SchedulePage() {
                     </Pagination>
                   </div>
                 </>
-              ) : (
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-medium">{currentMonth}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-7 gap-2 text-center">
-                      <div className="text-xs font-medium text-muted-foreground">Sun</div>
-                      <div className="text-xs font-medium text-muted-foreground">Mon</div>
-                      <div className="text-xs font-medium text-muted-foreground">Tue</div>
-                      <div className="text-xs font-medium text-muted-foreground">Wed</div>
-                      <div className="text-xs font-medium text-muted-foreground">Thu</div>
-                      <div className="text-xs font-medium text-muted-foreground">Fri</div>
-                      <div className="text-xs font-medium text-muted-foreground">Sat</div>
-
-                      {Array.from({ length: 35 }).map((_, i) => {
-                        const day = i - 3
-                        const isCurrentMonth = day >= 0 && day < 30
-                        const isToday = day === 15
-                        const hasEvent = [2, 6, 13, 26, 28].includes(day)
-                        const isScheduled = [4, 10, 19].includes(day)
-                        const isCancelled = [13].includes(day)
-
-                        return (
-                          <div
-                            key={i}
-                            className={`h-10 flex items-center justify-center rounded-md text-sm cursor-pointer
-                              ${!isCurrentMonth ? "text-muted-foreground" : ""}
-                              ${isToday ? "bg-primary/20 font-bold" : ""}
-                              ${hasEvent ? "bg-green-100" : ""}
-                              ${isScheduled ? "bg-blue-100" : ""}
-                              ${isCancelled ? "bg-red-100" : ""}`}
-                            onClick={() => {
-                              if (isCurrentMonth) {
-                                toast.info(`Selected date: September ${day + 1}, 2025`)
-                              }
-                            }}
-                          >
-                            {day >= 0 ? day + 1 : 31 + day}
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    <div className="flex flex-wrap gap-4 mt-4 text-xs">
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span>Successful Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <span>Cancelled Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <span>Pending Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span>Confirmed Visit</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              ) 
             </TabsContent>
 
             <TabsContent value="past-visits" className="mt-6">
-              {viewMode === "list" ? (
+            
                 <>
                   <div className="rounded-md border overflow-hidden">
                     <Table>
@@ -458,71 +375,7 @@ export default function SchedulePage() {
                     </Pagination>
                   </div>
                 </>
-              ) : (
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-medium">{currentMonth}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-7 gap-2 text-center">
-                      <div className="text-xs font-medium text-muted-foreground">Sun</div>
-                      <div className="text-xs font-medium text-muted-foreground">Mon</div>
-                      <div className="text-xs font-medium text-muted-foreground">Tue</div>
-                      <div className="text-xs font-medium text-muted-foreground">Wed</div>
-                      <div className="text-xs font-medium text-muted-foreground">Thu</div>
-                      <div className="text-xs font-medium text-muted-foreground">Fri</div>
-                      <div className="text-xs font-medium text-muted-foreground">Sat</div>
-
-                      {Array.from({ length: 35 }).map((_, i) => {
-                        const day = i - 3
-                        const isCurrentMonth = day >= 0 && day < 30
-                        const isToday = day === 15
-                        const hasEvent = [2, 6, 13, 26, 28].includes(day)
-                        const isScheduled = [4, 10, 19].includes(day)
-                        const isCancelled = [13].includes(day)
-
-                        return (
-                          <div
-                            key={i}
-                            className={`h-10 flex items-center justify-center rounded-md text-sm cursor-pointer
-                              ${!isCurrentMonth ? "text-muted-foreground" : ""}
-                              ${isToday ? "bg-primary/20 font-bold" : ""}
-                              ${hasEvent ? "bg-green-100" : ""}
-                              ${isScheduled ? "bg-blue-100" : ""}
-                              ${isCancelled ? "bg-red-100" : ""}`}
-                            onClick={() => {
-                              if (isCurrentMonth) {
-                                toast.info(`Selected date: September ${day + 1}, 2025`)
-                              }
-                            }}
-                          >
-                            {day >= 0 ? day + 1 : 31 + day}
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    <div className="flex flex-wrap gap-4 mt-4 text-xs">
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span>Successful Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <span>Cancelled Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <span>Pending Visit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span>Confirmed Visit</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+            
             </TabsContent>
           </Tabs>
         </div>
