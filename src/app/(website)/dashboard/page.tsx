@@ -383,7 +383,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className=" lg:col-span-2 max-h-[500px] overflow-y-auto">
+          <Card className=" lg:col-span-2 ">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">
                 Notifications
@@ -393,7 +393,7 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className=" max-h-[290px] overflow-y-auto">
                 {notifications.map((notification) => (
                   <div
                     key={notification?._id}
