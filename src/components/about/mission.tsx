@@ -52,7 +52,7 @@ const Mission = () => {
         </div>
 
         {/* Timeline Section */}
-        <div className="w-full pt-12 sm:pt-16 md:pt-20">
+        <div id="our-journey" className="w-full pt-12 sm:pt-16 md:pt-20">
           <h2 className="text-2xl sm:text-3xl font-bold text-[#F7E39F] text-center mb-8">
             Our Journey
           </h2>
@@ -123,7 +123,7 @@ const Mission = () => {
         </div>
 
         {/* Services Section */}
-        <div className="w-full pt-12 sm:pt-16 md:pt-20">
+        <div id="our-services" className="w-full pt-12 sm:pt-16 md:pt-20">
           <h2 className="text-2xl sm:text-3xl font-bold text-[#F7E39F] text-center mb-8">
             Our Services
           </h2>
