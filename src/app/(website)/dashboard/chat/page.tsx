@@ -16,8 +16,8 @@ export default function UserChatPage() {
   const [chatId, setChatId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const token = session?.accessToken;
-  console.log(token);
+
+ 
 
   const userInfo = session?.user;
 
@@ -79,7 +79,7 @@ export default function UserChatPage() {
 
       socket.on("newMessage", (newMessage: Message) => {
         setMessages((prev) => [...prev, newMessage]);
-        console.log("newMessage", newMessage);
+       
       });
 
       return () => {

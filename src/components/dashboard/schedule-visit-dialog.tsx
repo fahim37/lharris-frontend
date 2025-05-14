@@ -119,8 +119,8 @@ export function ScheduleVisitDialog({
       setVisitType("routine-check");
     },
     onError: (error) => {
-      toast.error("Error scheduling visit. Please try again.");
-      console.error(error);
+      toast.error( error.message || "Error scheduling visit. Please try again.");
+   
     },
   });
 

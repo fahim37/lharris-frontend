@@ -6,14 +6,14 @@ import { useState } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
- 
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      
+
       setEmail("");
-  
+
     }
   };
 
@@ -26,7 +26,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/about#mission"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Company Story
@@ -34,18 +34,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/about#mission"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
-                  Careers
+                  Our Journey
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="about#mission"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
-                  Press
+                  Our Services
                 </Link>
               </li>
             </ul>
@@ -55,7 +55,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/services#security-services"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Video Monitoring
@@ -63,7 +63,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/services#security-services"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Visit Scheduling
@@ -71,7 +71,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/services#pricing-section"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Payment Plans
@@ -121,8 +121,8 @@ export default function Footer() {
               <Button type="submit" className="rounded-l-none">
                 <Send className="h-4 w-4 text-[#091057]" />
               </Button>
-        
-             
+
+
             </form>
             <div className="flex gap-4 mt-4">
               <Link href="#" className="text-gray-300 hover:text-primary">

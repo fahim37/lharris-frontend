@@ -80,9 +80,9 @@ export default function ResetPasswordForm({
       onSubmit();
     } catch (error) {
       console.error("Error:", error);
-      alert(
-        error instanceof Error ? error.message : "Failed to reset password"
-      );
+      // alert(
+      //   error instanceof Error ? error.message : "Failed to reset password"
+      // );
     } finally {
       setIsLoading(false);
     }

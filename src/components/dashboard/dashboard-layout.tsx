@@ -15,7 +15,7 @@ export function DashboardLayout({
   userName,
   userRole,
 }: DashboardLayoutProps) {
-  console.log(userName);
+ 
   
   return (
     <div className="min-h-screen bg-background">
