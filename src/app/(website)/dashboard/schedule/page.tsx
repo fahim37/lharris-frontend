@@ -302,7 +302,7 @@ export default function SchedulePage() {
                     </Pagination>
                   </div>
                 </>
-              ) 
+              
             </TabsContent>
 
             <TabsContent value="past-visits" className="mt-6">

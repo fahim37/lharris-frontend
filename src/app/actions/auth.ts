@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-console.log("url", API_BASE_URL);
+
 
 export async function registerUser(userData: {
   fullname: string;
@@ -22,7 +22,7 @@ export async function registerUser(userData: {
     });
 
     const data = await response.json();
-    console.log("signup data", data);
+    // console.log("signup data", data);
 
     if (!response.ok) {
       return {
@@ -109,7 +109,7 @@ export async function verifyCode(code: string) {
     });
 
     const data = await response.json();
-    console.log(data, "verify data");
+ 
 
     if (!response.ok) {
       return {

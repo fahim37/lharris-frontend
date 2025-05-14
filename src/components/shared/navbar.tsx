@@ -21,7 +21,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const session = useSession()
   const isLoggedIn = !!session.data?.accessToken
-  console.log("Session status:", isLoggedIn)
+ 
 
   const isActive = (href: string) => pathname === href
 

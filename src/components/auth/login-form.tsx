@@ -57,7 +57,7 @@ export function LoginForm() {
         callbackUrl: "/",
       });
 
-      console.log("login data df", response);
+    
       if (response?.error) {
         toast.error(response?.error);
       } else {
