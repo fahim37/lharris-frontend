@@ -47,8 +47,8 @@ export function MediaViewerDialog({
           document.body.removeChild(link);
           URL.revokeObjectURL(blobUrl); // Clean up the Blob URL
         } catch (error: any) {
-          console.error(`Error downloading ${item.type}:`, error);
-          toast.error(`Error downloading ${item.type}`);
+          
+          toast.error( error.message || `Error downloading ${item.type}`);
         }
       }
       toast.success(`${media.issues[0].media.length} media items download initiated`);

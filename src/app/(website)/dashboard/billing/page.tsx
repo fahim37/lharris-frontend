@@ -70,7 +70,7 @@ export default function BillingPage() {
     }
   }
 
-  console.log(data)
+ 
 
   return (
     <DashboardLayout

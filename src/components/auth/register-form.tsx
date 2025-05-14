@@ -63,7 +63,7 @@ export function RegisterForm() {
   async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
 
-    console.log("signup", data);
+   
 
     try {
       const result = await registerUser({
@@ -73,7 +73,7 @@ export function RegisterForm() {
         confirmPassword: data?.confirmPassword,
       });
 
-      console.log("sign up", result);
+    
 
       if (result.success) {
         toast("Please verify your email to continue.");

@@ -33,7 +33,7 @@ export default function AddOnsPage() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const token = session?.accessToken;
-  console.log(session);
+ 
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);

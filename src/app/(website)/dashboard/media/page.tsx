@@ -79,9 +79,7 @@ export default function MediaPage() {
         try {
           const response = await fetch(mediaItem.url);
           if (!response.ok) {
-            console.error(
-              `Failed to fetch ${mediaItem.type}: ${response.status}`
-            );
+          
             toast.error(`Failed to download ${mediaItem.type}`);
             continue; // Skip to the next item
           }

@@ -80,20 +80,20 @@ export default function ContactSection() {
                 name="inquiryType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white text-[14px] font-[600]">Inquiry Type*</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel className="text-white text-[14px] font-[600]">Prioty*</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full h-12 border-gray-200 rounded-md bg-white text-black">
                           <SelectValue placeholder="Select Inquiry Type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-white text-black">
-                        <SelectItem value="general">General Support</SelectItem>
-                        <SelectItem value="sales">Sales</SelectItem>
-                        <SelectItem value="technical">Technical Support</SelectItem>
-                        <SelectItem value="amar order koi ekhono ashe na kno">My Order Hasn&apos;t Arrived</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
                       </SelectContent>
                     </Select>
+
                     <FormMessage />
                   </FormItem>
                 )}
