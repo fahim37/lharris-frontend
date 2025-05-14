@@ -95,7 +95,7 @@ export default function BillingPage() {
                       <TableHead className="w-[50px] text-center pl-10">Transaction ID</TableHead>
                       <TableHead className="text-center">Date</TableHead>
                       <TableHead className="text-center">Visit Time</TableHead>
-                      <TableHead className="text-center">Amount</TableHead>
+                   
                       <TableHead className="text-center">Plan Name</TableHead>
                       <TableHead className="text-center">Type</TableHead>
                       <TableHead className="text-center">Status</TableHead>
@@ -121,7 +121,7 @@ export default function BillingPage() {
                             hour12: true,
                           })}
                         </TableCell>
-                        <TableCell>{item.formattedAmount}</TableCell>
+                       
                         <TableCell className="capitalize">{item.plan?.name}</TableCell>
                         <TableCell className="capitalize">{item?.plan?.pack}</TableCell>
                         <TableCell className="max-w-[200px]">

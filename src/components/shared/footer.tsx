@@ -34,7 +34,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/about#mission"
+                  href="/about#our-journey"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Our Journey
@@ -42,7 +42,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="about#mission"
+                  href="about#our-services"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Our Services
@@ -63,7 +63,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/services#security-services"
+                  href="/dashboard/schedule"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
                   Visit Scheduling
@@ -80,17 +80,17 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="text-white font-medium mb-4">Legal</h3>
+            <h3 className="text-white font-medium mb-4">Contact</h3>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/contact#contactus"
                   className="text-gray-300 text-sm hover:text-primary"
                 >
-                  Privacy Policy
+                Contact Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="#"
                   className="text-gray-300 text-sm hover:text-primary"
@@ -105,7 +105,7 @@ export default function Footer() {
                 >
                   Compliance
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div>
